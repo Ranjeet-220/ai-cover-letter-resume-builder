@@ -52,7 +52,7 @@ An AI-powered job application toolkit that generates tailored cover letters, bui
 
 ### Prerequisites
 
-- Node.js 20+ and npm
+- Node.js 22+ (24 recommended) and npm — tests run `.ts` files directly via the built-in test runner, which requires Node 22.6+
 
 ### Installation
 
