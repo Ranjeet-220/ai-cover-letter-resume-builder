@@ -5,13 +5,13 @@
 # AI Cover Letter & Resume Builder
 
 [![CI](https://github.com/Ranjeet-220/ai-cover-letter-resume-builder/actions/workflows/ci.yml/badge.svg)](https://github.com/Ranjeet-220/ai-cover-letter-resume-builder/actions/workflows/ci.yml)
-[![Deployed on Vercel](https://img.shields.io/badge/deployed%20on-Vercel-black?logo=vercel)](https://ai-cover-letter-resume-builder.vercel.app)
+[![Deployed on Vercel](https://img.shields.io/badge/deployed%20on-Vercel-black?logo=vercel)](https://jobbeam.vercel.app)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 ![Next.js 16](https://img.shields.io/badge/Next.js%2016-black?logo=next.js)
 ![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?logo=typescript&logoColor=white)
 ![Tailwind CSS 4](https://img.shields.io/badge/Tailwind%20CSS%204-06B6D4?logo=tailwindcss&logoColor=white)
 
-**Live Demo:** [ai-cover-letter-resume-builder.vercel.app](https://ai-cover-letter-resume-builder.vercel.app)
+**Live Demo:** [jobbeam.vercel.app](https://jobbeam.vercel.app)
 
 An AI-powered job application toolkit that generates tailored cover letters, builds ATS-friendly resumes and CVs, analyzes match scores against job descriptions, and tracks your applications — all in one place.
 
