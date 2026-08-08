@@ -1,0 +1,78 @@
+import type { Metadata, Viewport } from "next";
+import "./globals.css";
+import { ToastProvider } from "../components/Toast";
+
+export const metadata: Metadata = {
+  metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL || "https://covercraft-ai.vercel.app"),
+  title: {
+    default: "CoverCraft AI Studio - ATS Resume, Cover Letter & Executive CV Builder",
+    template: "%s | CoverCraft AI Studio",
+  },
+  description: "Create personalized, ATS-optimized cover letters, Ivy League resumes, and executive CVs in seconds with Gemini 2.5 Flash. Features 1-click job post URL extraction and real-time ATS match scoring.",
+  keywords: [
+    "AI Cover Letter Generator",
+    "Cover Letter Builder",
+    "Ivy League Resume Template",
+    "AI Resume Tailoring",
+    "Job Post URL Importer",
+    "ATS Match Score Analyzer",
+    "Gemini 2.5 Flash Career Tools",
+    "Executive CV Builder",
+    "Job Application Assistant",
+  ],
+  authors: [{ name: "CoverCraft AI Team", url: "https://covercraft-ai.vercel.app" }],
+  creator: "CoverCraft AI",
+  publisher: "CoverCraft AI",
+  formatDetection: {
+    email: false,
+    address: false,
+    telephone: false,
+  },
+  openGraph: {
+    title: "CoverCraft AI Studio - ATS Resume, Cover Letter & Executive CV Builder",
+    description: "Create personalized, ATS-optimized cover letters, Ivy League resumes, and executive CVs in seconds with Gemini 2.5 Flash.",
+    url: "https://covercraft-ai.vercel.app",
+    siteName: "CoverCraft AI Studio",
+    locale: "en_US",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "CoverCraft AI Studio - Smart Career Writing Suite",
+    description: "Create personalized, ATS-optimized cover letters, Ivy League resumes, and executive CVs in seconds with Gemini 2.5 Flash.",
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
+  },
+};
+
+export const viewport: Viewport = {
+  themeColor: "#000000",
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
+};
+
+export default function RootLayout({
+  children,
+}: Readonly<{
+  children: React.ReactNode;
+}>) {
+  return (
+    <html lang="en" className="dark">
+      <body className="bg-black text-zinc-100 antialiased selection:bg-white selection:text-black font-sans min-h-screen">
+        <ToastProvider>
+          {children}
+        </ToastProvider>
+      </body>
+    </html>
+  );
+}
