@@ -2,8 +2,10 @@ import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import { ToastProvider } from "../components/Toast";
 
+const APP_URL = process.env.NEXT_PUBLIC_APP_URL || "https://jobbeam.vercel.app";
+
 export const metadata: Metadata = {
-  metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL || "https://covercraft-ai.vercel.app"),
+  metadataBase: new URL(APP_URL),
   title: {
     default: "CoverCraft AI Studio - ATS Resume, Cover Letter & Executive CV Builder",
     template: "%s | CoverCraft AI Studio",
@@ -20,7 +22,7 @@ export const metadata: Metadata = {
     "Executive CV Builder",
     "Job Application Assistant",
   ],
-  authors: [{ name: "CoverCraft AI Team", url: "https://covercraft-ai.vercel.app" }],
+  authors: [{ name: "Ranjeet Munjewar", url: APP_URL }],
   creator: "CoverCraft AI",
   publisher: "CoverCraft AI",
   formatDetection: {
@@ -31,7 +33,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "CoverCraft AI Studio - ATS Resume, Cover Letter & Executive CV Builder",
     description: "Create personalized, ATS-optimized cover letters, Ivy League resumes, and executive CVs in seconds with Gemini 3.1 Flash Lite.",
-    url: "https://covercraft-ai.vercel.app",
+    url: APP_URL,
     siteName: "CoverCraft AI Studio",
     locale: "en_US",
     type: "website",
