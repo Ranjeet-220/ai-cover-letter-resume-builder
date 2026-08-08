@@ -1,6 +1,21 @@
+<div align="center">
+
+<img src="public/logo.svg" alt="CoverCraft AI Studio logo" width="96" height="96" />
+
 # AI Cover Letter & Resume Builder
 
+[![CI](https://github.com/Ranjeet-220/ai-cover-letter-resume-builder/actions/workflows/ci.yml/badge.svg)](https://github.com/Ranjeet-220/ai-cover-letter-resume-builder/actions/workflows/ci.yml)
+[![Deployed on Vercel](https://img.shields.io/badge/deployed%20on-Vercel-black?logo=vercel)](https://covercraft-ai.vercel.app)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+![Next.js 16](https://img.shields.io/badge/Next.js%2016-black?logo=next.js)
+![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?logo=typescript&logoColor=white)
+![Tailwind CSS 4](https://img.shields.io/badge/Tailwind%20CSS%204-06B6D4?logo=tailwindcss&logoColor=white)
+
+**Live Demo:** [covercraft-ai.vercel.app](https://covercraft-ai.vercel.app)
+
 An AI-powered job application toolkit that generates tailored cover letters, builds ATS-friendly resumes and CVs, analyzes match scores against job descriptions, and tracks your applications — all in one place.
+
+</div>
 
 ## Features
 
@@ -14,6 +29,14 @@ An AI-powered job application toolkit that generates tailored cover letters, bui
 - **Resume Profiles** — Save and switch between multiple resume profiles
 - **Auth & Billing** — Sign in with Supabase Auth, Pro plans with Stripe checkout
 
+## Screenshots
+
+> Add screenshots here — drop images in `docs/screenshots/` and reference them like this:
+
+```md
+![Home page](docs/screenshots/home.png)
+```
+
 ## Tech Stack
 
 - **Framework:** Next.js 16 (App Router) + React 19 + TypeScript
@@ -23,6 +46,7 @@ An AI-powered job application toolkit that generates tailored cover letters, bui
 - **Payments:** Stripe
 - **Export:** jsPDF + html2canvas
 - **Tests:** Node.js built-in test runner
+- **CI:** GitHub Actions (lint, test, build)
 
 ## Getting Started
 
@@ -50,6 +74,8 @@ cp .env.example .env.local
 | `ANTHROPIC_API_KEY` | No | Anthropic Claude API key |
 | `NEXT_PUBLIC_SUPABASE_URL` | No | Supabase project URL |
 | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | No | Supabase anonymous key |
+
+> **Note:** The Stripe and Supabase features are optional. Everything except `GEMINI_API_KEY` can be left empty for a fully working local demo.
 
 ### Run the development server
 
@@ -81,6 +107,14 @@ Open [http://localhost:3000](http://localhost:3000) with your browser.
 - `GET /api/stripe/checkout` — Create Stripe checkout session
 - `GET /api/stripe/verify` — Verify Stripe payment
 
+## Security
+
+API keys are always handled server-side via environment variables and are never exposed to the client. If you self-host and expose the app publicly, add rate limiting or authentication before the API routes — clients can supply their own API keys via request bodies. See [SECURITY.md](SECURITY.md) for details on reporting vulnerabilities.
+
+## Contributing
+
+Contributions are welcome! Please read [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines on commits, tests, and pull requests.
+
 ## License
 
-MIT
+[MIT](LICENSE) © 2026 Ranjeet Munjewar
