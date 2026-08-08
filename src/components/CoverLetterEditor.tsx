@@ -95,7 +95,7 @@ export function CoverLetterEditor({
     try {
       const customGeminiKey = typeof window !== 'undefined' ? localStorage.getItem('covercraft_gemini_api_key') || '' : '';
       const customAnthropicKey = typeof window !== 'undefined' ? localStorage.getItem('covercraft_anthropic_api_key') || '' : '';
-      const model = typeof window !== 'undefined' ? localStorage.getItem('covercraft_selected_model') || 'gemini-2.5-flash' : 'gemini-2.5-flash';
+      const model = typeof window !== 'undefined' ? localStorage.getItem('covercraft_selected_model') || 'gemini-3.1-flash-lite' : 'gemini-3.1-flash-lite';
 
       const res = await fetch('/api/improve', {
         method: 'POST',

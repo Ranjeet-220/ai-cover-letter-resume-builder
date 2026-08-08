@@ -172,7 +172,7 @@ export function AuthBillingModal({
                         <Check className="w-3.5 h-3.5 text-white" /> Unlimited Generations
                       </li>
                       <li className="flex items-center gap-2">
-                        <Check className="w-3.5 h-3.5 text-white" /> Gemini 2.5 Flash & Pro
+                        <Check className="w-3.5 h-3.5 text-white" /> Gemini 3.1 Flash Lite & Pro
                       </li>
                       <li className="flex items-center gap-2">
                         <Check className="w-3.5 h-3.5 text-white" /> PDF & Markdown Exports

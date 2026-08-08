@@ -147,7 +147,7 @@ const SAMPLE_CV_PRESETS: Record<string, CvData> = {
 export function CvBuilder() {
   const [cvData, setCvData] = useState<CvData>(SAMPLE_CV_PRESETS.executive);
   const [activeTab, setActiveTab] = useState<'editor' | 'preview'>('editor');
-  const [selectedModel, setSelectedModel] = useState('gemini-2.5-flash');
+  const [selectedModel, setSelectedModel] = useState('gemini-3.1-flash-lite');
   const [loadingAi, setLoadingAi] = useState(false);
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [showApiModal, setShowApiModal] = useState(false);
@@ -167,10 +167,10 @@ export function CvBuilder() {
       // This synchronizes the client-only preference after hydration.
       // eslint-disable-next-line react-hooks/set-state-in-effect
       setSelectedModel(
-        localStorage.getItem('covercraft_selected_model') || 'gemini-2.5-flash'
+        localStorage.getItem('covercraft_selected_model') || 'gemini-3.1-flash-lite'
       );
     } catch {
-      setSelectedModel('gemini-2.5-flash');
+      setSelectedModel('gemini-3.1-flash-lite');
     }
   }, []);
 

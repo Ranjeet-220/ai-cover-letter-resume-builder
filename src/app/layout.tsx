@@ -8,7 +8,7 @@ export const metadata: Metadata = {
     default: "CoverCraft AI Studio - ATS Resume, Cover Letter & Executive CV Builder",
     template: "%s | CoverCraft AI Studio",
   },
-  description: "Create personalized, ATS-optimized cover letters, Ivy League resumes, and executive CVs in seconds with Gemini 2.5 Flash. Features 1-click job post URL extraction and real-time ATS match scoring.",
+  description: "Create personalized, ATS-optimized cover letters, Ivy League resumes, and executive CVs in seconds with Gemini 3.1 Flash Lite. Features 1-click job post URL extraction and real-time ATS match scoring.",
   keywords: [
     "AI Cover Letter Generator",
     "Cover Letter Builder",
@@ -16,7 +16,7 @@ export const metadata: Metadata = {
     "AI Resume Tailoring",
     "Job Post URL Importer",
     "ATS Match Score Analyzer",
-    "Gemini 2.5 Flash Career Tools",
+    "Gemini 3.1 Flash Lite Career Tools",
     "Executive CV Builder",
     "Job Application Assistant",
   ],
@@ -30,7 +30,7 @@ export const metadata: Metadata = {
   },
   openGraph: {
     title: "CoverCraft AI Studio - ATS Resume, Cover Letter & Executive CV Builder",
-    description: "Create personalized, ATS-optimized cover letters, Ivy League resumes, and executive CVs in seconds with Gemini 2.5 Flash.",
+    description: "Create personalized, ATS-optimized cover letters, Ivy League resumes, and executive CVs in seconds with Gemini 3.1 Flash Lite.",
     url: "https://covercraft-ai.vercel.app",
     siteName: "CoverCraft AI Studio",
     locale: "en_US",
@@ -39,7 +39,7 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "CoverCraft AI Studio - Smart Career Writing Suite",
-    description: "Create personalized, ATS-optimized cover letters, Ivy League resumes, and executive CVs in seconds with Gemini 2.5 Flash.",
+    description: "Create personalized, ATS-optimized cover letters, Ivy League resumes, and executive CVs in seconds with Gemini 3.1 Flash Lite.",
   },
   robots: {
     index: true,

@@ -49,7 +49,7 @@ You MUST output your response inside <cover_letter> tags.
 `;
 
 const GEMINI_SYSTEM_INSTRUCTION = `
-You are Google Gemini 2.5 Flash, an expert Talent Acquisition Strategist and Direct Copywriter specializing in high-impact executive positioning, resume writing, and cover letter optimization.
+You are Google Gemini 3.1 Flash Lite, an expert Talent Acquisition Strategist and Direct Copywriter specializing in high-impact executive positioning, resume writing, and cover letter optimization.
 
 ### CORE OPERATIONAL MANDATE
 Generate custom, non-generic cover letters and career documents strictly grounded in the provided resume data and job requirements.
@@ -73,7 +73,7 @@ export async function POST(req: NextRequest) {
     const jobDescription = body.jobDescription?.trim() || "";
     const tone = body.tone || "Professional";
     const length = body.length || "Standard";
-    const requestedModel = body.model || "gemini-2.5-flash";
+    const requestedModel = body.model || "gemini-3.1-flash-lite";
 
     if (!resume || !jobDescription) {
       return NextResponse.json(
@@ -112,7 +112,7 @@ ${jobDescription || `Role: ${jobTitle} at ${targetCompany}`}
 <focus_keywords>${focusKeywordsArray.join(", ")}</focus_keywords>
 </customization_params>
 
-Generate the tailored cover letter using Gemini 2.5 Flash high precision standards now.
+Generate the tailored cover letter using Gemini 3.1 Flash Lite high precision standards now.
 `;
 
     // 1. ANTHROPIC CLAUDE 3.5 SONNET
@@ -146,23 +146,23 @@ Generate the tailored cover letter using Gemini 2.5 Flash high precision standar
       }
     }
 
-    // 2. GOOGLE GEMINI 2.5 FLASH / 2.5 FLASH / 2.5 PRO
+    // 2. GOOGLE GEMINI 3.1 FLASH LITE / 2.5 FLASH / 2.5 PRO
     if (geminiKey) {
       try {
         const genAI = new GoogleGenerativeAI(geminiKey);
         
-        let targetModelName = "gemini-2.5-flash";
-        let displayModelName = "Gemini 2.5 Flash";
+        let targetModelName = "gemini-3.1-flash-lite";
+        let displayModelName = "Gemini 3.1 Flash Lite";
 
         if (requestedModel.includes("3.6") || requestedModel.includes("3.6-flash")) {
-          targetModelName = "gemini-2.5-flash"; // Uses latest flash engine with 3.6 system instruction optimization
-          displayModelName = "Gemini 2.5 Flash";
+          targetModelName = "gemini-3.1-flash-lite"; // Uses latest flash engine with 3.6 system instruction optimization
+          displayModelName = "Gemini 3.1 Flash Lite";
         } else if (requestedModel.includes("2.5-pro") || requestedModel.includes("pro")) {
-          targetModelName = "gemini-2.5-pro";
-          displayModelName = "Gemini 2.5 Pro";
+          targetModelName = "gemini-3.1-pro-preview";
+          displayModelName = "Gemini 3.1 Pro";
         } else if (requestedModel.includes("2.5-flash")) {
-          targetModelName = "gemini-2.5-flash";
-          displayModelName = "Gemini 2.5 Flash";
+          targetModelName = "gemini-3.1-flash-lite";
+          displayModelName = "Gemini 3.1 Flash Lite";
         }
 
         let model;
@@ -177,7 +177,7 @@ Generate the tailored cover letter using Gemini 2.5 Flash high precision standar
             },
           });
         } catch {
-          model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
+          model = genAI.getGenerativeModel({ model: "gemini-3.1-flash-lite" });
         }
 
         const result = await model.generateContent(userPrompt);
@@ -211,7 +211,7 @@ Generate the tailored cover letter using Gemini 2.5 Flash high precision standar
       success: true,
       coverLetter: cleanClinches(fallbackCoverLetter),
       generatedWith: "fallback",
-      modelUsed: "Gemini 2.5 Flash Engine",
+      modelUsed: "Gemini 3.1 Flash Lite Engine",
       tone,
       length,
     });

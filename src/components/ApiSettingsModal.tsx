@@ -11,14 +11,14 @@ interface ApiSettingsModalProps {
 }
 
 export function ApiSettingsModal({ isOpen, onClose, onSave }: ApiSettingsModalProps) {
-  const [selectedModel, setSelectedModel] = useState('gemini-2.5-flash');
+  const [selectedModel, setSelectedModel] = useState('gemini-3.1-flash-lite');
   const [geminiKey, setGeminiKey] = useState('');
   const [anthropicKey, setAnthropicKey] = useState('');
   const [savedSuccess, setSavedSuccess] = useState(false);
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      const model = localStorage.getItem('covercraft_selected_model') || 'gemini-2.5-flash';
+      const model = localStorage.getItem('covercraft_selected_model') || 'gemini-3.1-flash-lite';
       const gKey = localStorage.getItem('covercraft_gemini_api_key') || '';
       const aKey = localStorage.getItem('covercraft_anthropic_api_key') || '';
       setSelectedModel(model);
@@ -88,10 +88,10 @@ export function ApiSettingsModal({ isOpen, onClose, onSave }: ApiSettingsModalPr
             </label>
             <div className="grid grid-cols-1 gap-2.5">
               
-              {/* Gemini 2.5 Flash (High) */}
+              {/* Gemini 3.1 Flash Lite (High) */}
               <label
                 className={`p-3.5 rounded-2xl border cursor-pointer transition flex items-center justify-between ${
-                  selectedModel === 'gemini-2.5-flash'
+                  selectedModel === 'gemini-3.1-flash-lite'
                     ? 'bg-zinc-900 border-white shadow-lg'
                     : 'bg-black border-zinc-800 hover:border-zinc-700'
                 }`}
@@ -100,14 +100,14 @@ export function ApiSettingsModal({ isOpen, onClose, onSave }: ApiSettingsModalPr
                   <input
                     type="radio"
                     name="model"
-                    value="gemini-2.5-flash"
-                    checked={selectedModel === 'gemini-2.5-flash'}
+                    value="gemini-3.1-flash-lite"
+                    checked={selectedModel === 'gemini-3.1-flash-lite'}
                     onChange={(e) => setSelectedModel(e.target.value)}
                     className="accent-white"
                   />
                   <div>
                     <div className="text-xs font-extrabold text-white flex items-center gap-2">
-                      Google Gemini 2.5 Flash (High)
+                      Google Gemini 3.1 Flash Lite (High)
                       <span className="text-[9px] uppercase font-bold px-2 py-0.5 rounded bg-white text-black border border-white">
                         ⚡ Recommended 2026
                       </span>
@@ -119,10 +119,10 @@ export function ApiSettingsModal({ isOpen, onClose, onSave }: ApiSettingsModalPr
                 </div>
               </label>
 
-              {/* Gemini 2.5 Pro */}
+              {/* Gemini 3.1 Pro */}
               <label
                 className={`p-3.5 rounded-2xl border cursor-pointer transition flex items-center justify-between ${
-                  selectedModel === 'gemini-2.5-pro'
+                  selectedModel === 'gemini-3.1-pro-preview'
                     ? 'bg-zinc-900 border-white shadow-lg'
                     : 'bg-black border-zinc-800 hover:border-zinc-700'
                 }`}
@@ -131,14 +131,14 @@ export function ApiSettingsModal({ isOpen, onClose, onSave }: ApiSettingsModalPr
                   <input
                     type="radio"
                     name="model"
-                    value="gemini-2.5-pro"
-                    checked={selectedModel === 'gemini-2.5-pro'}
+                    value="gemini-3.1-pro-preview"
+                    checked={selectedModel === 'gemini-3.1-pro-preview'}
                     onChange={(e) => setSelectedModel(e.target.value)}
                     className="accent-white"
                   />
                   <div>
                     <div className="text-xs font-bold text-white flex items-center gap-2">
-                      Google Gemini 2.5 Pro
+                      Google Gemini 3.1 Pro
                       <span className="text-[9px] uppercase font-bold px-2 py-0.5 rounded bg-zinc-800 text-zinc-300 border border-zinc-700">
                         🧠 Deep Reasoning
                       </span>

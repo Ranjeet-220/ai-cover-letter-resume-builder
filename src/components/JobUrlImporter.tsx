@@ -97,7 +97,7 @@ export function JobUrlImporter({
 
     try {
       let apiKey = '';
-      let model = 'gemini-2.5-flash';
+      let model = 'gemini-3.1-flash-lite';
       if (typeof window !== 'undefined') {
         apiKey = localStorage.getItem('covercraft_gemini_api_key') || '';
         model = localStorage.getItem('covercraft_selected_model') || model;
@@ -260,7 +260,7 @@ export function JobUrlImporter({
             {isLoading ? (
               <>
                 <Loader2 className="w-4 h-4 animate-spin text-white" />
-                <span>Parsing Job Listing with Gemini 2.5...</span>
+                <span>Parsing Job Listing with Gemini 3.1...</span>
               </>
             ) : (
               <>
@@ -365,7 +365,7 @@ export function JobUrlImporter({
       {/* Footer */}
       <div className="bg-zinc-950 p-4 border-t border-zinc-800 text-center text-[11px] text-zinc-500 flex items-center justify-center gap-2">
         <Sparkles className="w-3.5 h-3.5 text-zinc-400" />
-        <span>Powered by Gemini 2.5 Flash Engine with High Precision Fallback Parsing.</span>
+        <span>Powered by Gemini 3.1 Flash Lite Engine with High Precision Fallback Parsing.</span>
       </div>
 
     </div>

@@ -51,9 +51,9 @@ export async function POST(req: NextRequest): Promise<NextResponse<ColdEmailResp
         const genAI = new GoogleGenerativeAI(apiKey);
         let model;
         try {
-          model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
+          model = genAI.getGenerativeModel({ model: "gemini-3.1-flash-lite" });
         } catch {
-          model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
+          model = genAI.getGenerativeModel({ model: "gemini-3.1-flash-lite" });
         }
 
         const prompt = `

@@ -63,7 +63,7 @@ export function TopHeader({
           <h2 className="text-xs font-extrabold text-white flex items-center gap-2 tracking-tight">
             <span className="gradient-text-animated">{getStepTitle()}</span>
             <span className="hidden sm:inline-flex text-[9px] uppercase font-bold px-2 py-0.5 rounded bg-zinc-900 text-zinc-300 border border-zinc-800">
-              GEMINI 2.5 FLASH
+              GEMINI 3.1 FLASH LITE
             </span>
           </h2>
           <p className="text-[10px] text-zinc-400 hidden md:block">

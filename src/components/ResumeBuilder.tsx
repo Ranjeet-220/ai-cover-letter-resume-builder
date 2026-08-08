@@ -1057,7 +1057,7 @@ export function ResumeBuilder() {
   const { showToast } = useToast();
   const [resumeData, setResumeData] = useState<ResumeCvData>(SAMPLE_RESUME_PRESETS.software_engineer);
   const [activeTab, setActiveTab] = useState<'editor' | 'preview'>('editor');
-  const [selectedModel, setSelectedModel] = useState('gemini-2.5-flash');
+  const [selectedModel, setSelectedModel] = useState('gemini-3.1-flash-lite');
   const [selectedTemplateId, setSelectedTemplateId] = useState<ResumeTemplateId>('silicon-valley');
   const [showTemplateModal, setShowTemplateModal] = useState(false);
   const [loadingAi, setLoadingAi] = useState(false);
@@ -1156,7 +1156,7 @@ export function ResumeBuilder() {
     setRemainingFree(getFreeGenerationsRemaining());
     setIsPro(isProUser());
     if (typeof window !== 'undefined') {
-      const savedModel = localStorage.getItem('covercraft_selected_model') || 'gemini-2.5-flash';
+      const savedModel = localStorage.getItem('covercraft_selected_model') || 'gemini-3.1-flash-lite';
       setSelectedModel(savedModel);
       const savedTemplate = (localStorage.getItem('covercraft_selected_template') as ResumeTemplateId) || 'silicon-valley';
       setSelectedTemplateId(savedTemplate);
@@ -1442,7 +1442,7 @@ ${resumeData.education}
             <h2 className="text-sm font-bold text-white flex items-center gap-2">
               <span className="gradient-text-animated">AI Executive Resume &amp; CV Builder</span>
               <span className="text-[10px] uppercase font-bold px-2 py-0.5 rounded bg-zinc-900 text-zinc-300 border border-zinc-700">
-                GEMINI 2.5 FLASH (HIGH)
+                GEMINI 3.1 FLASH LITE (HIGH)
               </span>
             </h2>
             <p className="text-xs text-zinc-400">
@@ -1467,7 +1467,7 @@ ${resumeData.education}
             className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-black border border-zinc-800 text-xs text-zinc-300 hover:border-white transition cursor-pointer"
           >
             <Cpu className="w-3.5 h-3.5 text-zinc-400" />
-            <span>Model: <strong className="text-white">Gemini 2.5 Flash (High)</strong></span>
+            <span>Model: <strong className="text-white">Gemini 3.1 Flash Lite (High)</strong></span>
           </button>
 
           <button

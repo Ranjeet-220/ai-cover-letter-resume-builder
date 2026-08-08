@@ -47,7 +47,7 @@ export function MVPGenerator() {
   const [showJobUrlImporter, setShowJobUrlImporter] = useState(false);
   const [modalReason, setModalReason] = useState<'limit_reached' | 'upgrade_click'>('limit_reached');
 
-  const [selectedModel, setSelectedModel] = useState('gemini-2.5-flash');
+  const [selectedModel, setSelectedModel] = useState('gemini-3.1-flash-lite');
 
   // ATS Score State
   const [atsResult, setAtsResult] = useState<AtsAnalysisResult | null>(null);
@@ -57,7 +57,7 @@ export function MVPGenerator() {
     setRemainingFree(getFreeGenerationsRemaining());
     setIsPro(isProUser());
     if (typeof window !== 'undefined') {
-      const savedModel = localStorage.getItem('covercraft_selected_model') || 'gemini-2.5-flash';
+      const savedModel = localStorage.getItem('covercraft_selected_model') || 'gemini-3.1-flash-lite';
       setSelectedModel(savedModel);
     }
   }, []);
@@ -77,10 +77,10 @@ export function MVPGenerator() {
   };
 
   const getModelLabel = () => {
-    if (selectedModel === 'gemini-2.5-flash') return 'Gemini 2.5 Flash (High)';
-    if (selectedModel === 'gemini-2.5-pro') return 'Gemini 2.5 Pro';
+    if (selectedModel === 'gemini-3.1-flash-lite') return 'Gemini 3.1 Flash Lite (High)';
+    if (selectedModel === 'gemini-3.1-pro-preview') return 'Gemini 3.1 Pro';
     if (selectedModel === 'claude-sonnet-4-20250514') return 'Claude Sonnet 4';
-    return 'Gemini 2.5 Flash (High)';
+    return 'Gemini 3.1 Flash Lite (High)';
   };
 
   const handleGenerate = async (e: React.FormEvent) => {

@@ -21,7 +21,7 @@ export async function POST(req: NextRequest) {
     const targetRole = body.targetRole?.trim() || "Professional Role";
     const pastExperience = body.pastExperience?.trim() || "";
     const education = body.education?.trim() || "";
-    const requestedModel = body.model || "gemini-2.5-flash";
+    const requestedModel = body.model || "gemini-3.1-flash-lite";
 
     if (!pastExperience) {
       return NextResponse.json(
@@ -41,7 +41,7 @@ export async function POST(req: NextRequest) {
     const anthropicKey = body.anthropicApiKey?.trim() || process.env.ANTHROPIC_API_KEY || "";
 
     const systemPrompt = `
-You are Google Gemini 2.5 Flash (High Precision Career Engine), an expert executive resume writer and ATS optimization specialist.
+You are Google Gemini 3.1 Flash Lite (High Precision Career Engine), an expert executive resume writer and ATS optimization specialist.
 Write a powerful 3-sentence Professional Executive Summary for a candidate targeting the position of "${targetRole}".
 
 CANDIDATE INPUTS:
@@ -81,16 +81,16 @@ DIRECTIVES:
       }
     }
 
-    // 2. Google Gemini 2.5 Flash / 2.5 Pro / 2.5 Flash
+    // 2. Google Gemini 3.1 Flash Lite / 2.5 Pro / 2.5 Flash
     if (geminiKey) {
       try {
         const genAI = new GoogleGenerativeAI(geminiKey);
-        let modelName = "gemini-2.5-flash";
-        let displayModel = "Gemini 2.5 Flash (High)";
+        let modelName = "gemini-3.1-flash-lite";
+        let displayModel = "Gemini 3.1 Flash Lite (High)";
 
         if (requestedModel.includes("2.5-pro") || requestedModel.includes("pro")) {
-          modelName = "gemini-2.5-pro";
-          displayModel = "Gemini 2.5 Pro";
+          modelName = "gemini-3.1-pro-preview";
+          displayModel = "Gemini 3.1 Pro";
         }
 
         const model = genAI.getGenerativeModel({ model: modelName });
@@ -123,7 +123,7 @@ DIRECTIVES:
     return NextResponse.json({
       success: true,
       summary: fallbackSummary,
-      modelUsed: "Gemini 2.5 Flash Engine (Fallback)",
+      modelUsed: "Gemini 3.1 Flash Lite Engine (Fallback)",
     });
 
   } catch (error: any) {

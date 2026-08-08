@@ -62,7 +62,7 @@ export async function POST(req: NextRequest) {
     }
 
     const geminiKey = body.apiKey?.trim() || process.env.GEMINI_API_KEY || "";
-    const requestedModel = body.model || "gemini-2.5-flash";
+    const requestedModel = body.model || "gemini-3.1-flash-lite";
 
     let fetchedHtml = "";
     let fetchErrorMsg = "";
@@ -100,14 +100,14 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // 1. Primary Extraction: Gemini 2.5 Flash
+    // 1. Primary Extraction: Gemini 3.1 Flash Lite
     if (geminiKey && (cleanText.length > 50 || jsonLdData || metaData)) {
       try {
         const genAI = new GoogleGenerativeAI(geminiKey);
-        let targetModel = "gemini-2.5-flash";
+        let targetModel = "gemini-3.1-flash-lite";
         
         if (requestedModel.includes("2.5-pro") || requestedModel.includes("pro")) {
-          targetModel = "gemini-2.5-pro";
+          targetModel = "gemini-3.1-pro-preview";
         }
 
         let model;
@@ -118,14 +118,14 @@ export async function POST(req: NextRequest) {
           });
         } catch {
           model = genAI.getGenerativeModel({
-            model: "gemini-2.5-flash",
+            model: "gemini-3.1-flash-lite",
             generationConfig: { responseMimeType: "application/json" },
           });
         }
 
         const sampleText = cleanText.slice(0, 20000);
         const prompt = `
-You are Google Gemini 2.5 Flash, an expert AI ATS parser and job scraper.
+You are Google Gemini 3.1 Flash Lite, an expert AI ATS parser and job scraper.
 Extract structured details from the following web page content.
 
 URL: ${parsedUrl.toString()}

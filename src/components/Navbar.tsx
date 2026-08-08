@@ -22,7 +22,7 @@ export interface NavbarProps {
 }
 
 export const AI_MODELS = [
-  { id: 'gemini-2.5-flash', name: 'Gemini 2.5 Flash', badge: 'Fast & Smart', icon: Zap },
+  { id: 'gemini-3.1-flash-lite', name: 'Gemini 3.1 Flash Lite', badge: 'Fast & Smart', icon: Zap },
   { id: 'claude-sonnet-4-20250514', name: 'Claude Sonnet 4', badge: 'High Precision', icon: Bot },
 ];
 
@@ -35,7 +35,7 @@ export const QUICK_PRESETS = [
 ];
 
 export default function Navbar({
-  selectedModel = 'gemini-2.5-flash',
+  selectedModel = 'gemini-3.1-flash-lite',
   onModelChange,
   activePreset = 'senior-dev',
   onPresetChange,
