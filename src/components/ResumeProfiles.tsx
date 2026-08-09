@@ -108,12 +108,13 @@ export function ResumeProfiles({ onSelectProfile }: ResumeProfilesProps) {
     e.preventDefault();
     if (!skillInput.trim()) return;
     const newSkill = skillInput.trim();
-    if (!currentProfile.skills?.includes(newSkill)) {
-      setCurrentProfile((prev) => ({
-        ...prev,
-        skills: [...(prev.skills || []), newSkill],
-      }));
-    }
+    setCurrentProfile((prev) => {
+      const existing = (prev.skills || []).some(
+        (s) => s.toLowerCase() === newSkill.toLowerCase()
+      );
+      if (existing) return prev;
+      return { ...prev, skills: [...(prev.skills || []), newSkill] };
+    });
     setSkillInput('');
   };
 
@@ -137,7 +138,8 @@ export function ResumeProfiles({ onSelectProfile }: ResumeProfilesProps) {
       });
       setIsEditing(false);
       await fetchProfiles();
-      if (onSelectProfile && (saved.isDefault || profiles.length === 0)) {
+      const updatedProfiles = await getResumeProfiles().catch(() => null);
+      if (onSelectProfile && (saved.isDefault || (updatedProfiles && updatedProfiles.length === 0))) {
         onSelectProfile(saved);
       }
     } catch (err) {
@@ -278,7 +280,7 @@ export function ResumeProfiles({ onSelectProfile }: ResumeProfilesProps) {
               <div className="space-y-1.5">
                 <span className="text-[10px] font-bold text-zinc-400 uppercase tracking-wider">Top Skills</span>
                 <div className="flex flex-wrap gap-1.5">
-                  {profile.skills.slice(0, 6).map((skill, idx) => (
+                  {(profile.skills ?? []).slice(0, 6).map((skill, idx) => (
                     <span
                       key={idx}
                       className="text-[11px] font-semibold bg-black text-zinc-200 px-2.5 py-0.5 rounded-md border border-zinc-800"
@@ -316,7 +318,7 @@ export function ResumeProfiles({ onSelectProfile }: ResumeProfilesProps) {
 
       {/* Edit / Create Profile Modal */}
       {isEditing && (
-        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4 overflow-y-auto animate-fadeIn">
+        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4 overflow-y-auto animate-fade-in">
           <div className="bg-zinc-950 border border-zinc-800 rounded-3xl max-w-2xl w-full p-6 space-y-6 shadow-2xl my-8 text-white">
             <div className="flex items-center justify-between border-b border-zinc-800 pb-4">
               <h3 className="text-lg font-bold text-white flex items-center gap-2">

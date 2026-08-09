@@ -60,6 +60,22 @@ export function MVPGenerator() {
       const savedModel = localStorage.getItem('covercraft_selected_model') || 'gemini-3.1-flash-lite';
       setSelectedModel(savedModel);
     }
+
+    const refreshUsage = () => {
+      setRemainingFree(getFreeGenerationsRemaining());
+      setIsPro(isProUser());
+    };
+    const refreshModel = () => {
+      if (typeof window !== 'undefined') {
+        setSelectedModel(localStorage.getItem('covercraft_selected_model') || 'gemini-3.1-flash-lite');
+      }
+    };
+    window.addEventListener('covercraft-usage-change', refreshUsage);
+    window.addEventListener('covercraft-settings-change', refreshModel);
+    return () => {
+      window.removeEventListener('covercraft-usage-change', refreshUsage);
+      window.removeEventListener('covercraft-settings-change', refreshModel);
+    };
   }, []);
 
   // Recalculate ATS Match Score whenever letter, resume, or job description changes
@@ -86,14 +102,14 @@ export function MVPGenerator() {
   const handleGenerate = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!canGenerate()) {
-      setModalReason('limit_reached');
-      setShowAuthModal(true);
+    if (!resumeText.trim() || !jobDescription.trim()) {
+      alert('Please paste both your Resume/Bio and the Job Description.');
       return;
     }
 
-    if (!resumeText.trim() || !jobDescription.trim()) {
-      alert('Please paste both your Resume/Bio and the Job Description.');
+    if (!canGenerate()) {
+      setModalReason('limit_reached');
+      setShowAuthModal(true);
       return;
     }
 
@@ -120,11 +136,11 @@ export function MVPGenerator() {
         }),
       });
 
-      const data = await response.json();
+      const data = await response.json().catch(() => null);
       if (!response.ok) {
-        throw new Error(data.error || 'Failed to generate cover letter');
+        throw new Error((data && data.error) || 'Failed to generate cover letter');
       }
-      if (data.coverLetter) {
+      if (data && data.coverLetter) {
         setGeneratedLetter(data.coverLetter);
         
         // Recalculate ATS Match Score for generated letter
@@ -133,12 +149,12 @@ export function MVPGenerator() {
 
         showToast('Cover Letter Generated!', 'ATS-tailored letter ready to copy or edit.');
 
-        if (!isPro) {
+        if (!isProUser()) {
           incrementUsageCount();
           refreshUsageStatus();
         }
       } else {
-        throw new Error(data.error || 'Failed to generate cover letter');
+        throw new Error((data && data.error) || 'Failed to generate cover letter');
       }
     } catch (err: any) {
       console.error(err);
@@ -148,12 +164,17 @@ export function MVPGenerator() {
     }
   };
 
-  const handleCopy = () => {
+  const handleCopy = async () => {
     if (!generatedLetter) return;
-    navigator.clipboard.writeText(generatedLetter);
-    setCopied(true);
-    showToast('Copied to Clipboard!', 'Cover letter text copied ready to paste.');
-    setTimeout(() => setCopied(false), 2000);
+    try {
+      await navigator.clipboard.writeText(generatedLetter);
+      setCopied(true);
+      showToast('Copied to Clipboard!', 'Cover letter text copied ready to paste.');
+      setTimeout(() => setCopied(false), 2000);
+    } catch (err) {
+      console.error(err);
+      showToast('Copy failed', 'Clipboard access was blocked.', 'error');
+    }
   };
 
   const loadSampleData = () => {
@@ -182,27 +203,30 @@ export function MVPGenerator() {
 
   const handleWeaveKeyword = (keyword: string) => {
     if (generatedLetter.trim()) {
-      const updated = weaveKeywordIntoText(generatedLetter, keyword);
-      setGeneratedLetter(updated);
+      setGeneratedLetter((prev) => weaveKeywordIntoText(prev, keyword));
     } else if (resumeText.trim()) {
-      const updated = weaveKeywordIntoText(resumeText, keyword);
-      setResumeText(updated);
+      setResumeText((prev) => weaveKeywordIntoText(prev, keyword));
     }
   };
 
   const handleWeaveAllKeywords = () => {
     if (!atsResult || atsResult.missingKeywords.length === 0) return;
-    let textToUpdate = generatedLetter.trim() ? generatedLetter : resumeText;
-    if (!textToUpdate.trim()) return;
-
-    atsResult.missingKeywords.forEach((kw) => {
-      textToUpdate = weaveKeywordIntoText(textToUpdate, kw);
-    });
-
     if (generatedLetter.trim()) {
-      setGeneratedLetter(textToUpdate);
-    } else {
-      setResumeText(textToUpdate);
+      setGeneratedLetter((prev) => {
+        let updated = prev;
+        atsResult.missingKeywords.forEach((kw) => {
+          updated = weaveKeywordIntoText(updated, kw);
+        });
+        return updated;
+      });
+    } else if (resumeText.trim()) {
+      setResumeText((prev) => {
+        let updated = prev;
+        atsResult.missingKeywords.forEach((kw) => {
+          updated = weaveKeywordIntoText(updated, kw);
+        });
+        return updated;
+      });
     }
   };
 
@@ -460,7 +484,7 @@ export function MVPGenerator() {
       </div>
 
       {/* ATS Match Score Analyzer Section */}
-      {(jobDescription.trim() || generatedLetter.trim() || resumeText.trim()) && (
+      {jobDescription.trim() && (generatedLetter.trim() || resumeText.trim()) && (
         <AtsMatchAnalyzer
           score={atsResult?.score}
           matchedKeywords={atsResult?.matchedKeywords}

@@ -12,9 +12,6 @@ import {
   Plus,
   X,
   Zap,
-  Award,
-  RotateCcw,
-  Layers,
   ChevronRight,
   Check,
   BrainCircuit,
@@ -303,7 +300,7 @@ export default function GeneratorForm({
 
         {/* Optional Custom API Key Drawer */}
         {showApiKeyDrawer && (
-          <div className="mb-4 p-4 rounded-xl bg-purple-950/30 border border-purple-500/30 text-xs animate-fadeIn">
+          <div className="mb-4 p-4 rounded-xl bg-purple-950/30 border border-purple-500/30 text-xs animate-fade-in">
             <label className="block text-purple-200 font-medium mb-1">
               Google Gemini API Key (Optional)
             </label>
@@ -420,7 +417,7 @@ export default function GeneratorForm({
       <form onSubmit={handleGenerate} className="space-y-5">
         {/* Tab 1: Job & Company */}
         {activeTab === "job" && (
-          <div className="space-y-4 animate-fadeIn">
+          <div className="space-y-4 animate-fade-in">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <label className="block text-xs font-semibold text-gray-300 mb-1.5">
@@ -488,7 +485,7 @@ export default function GeneratorForm({
 
         {/* Tab 2: Candidate Resume & Focus Keywords */}
         {activeTab === "resume" && (
-          <div className="space-y-4 animate-fadeIn">
+          <div className="space-y-4 animate-fade-in">
             <div>
               <div className="flex justify-between items-center mb-1.5">
                 <label className="block text-xs font-semibold text-gray-300">
@@ -574,7 +571,7 @@ export default function GeneratorForm({
 
         {/* Tab 3: Tone & Length */}
         {activeTab === "style" && (
-          <div className="space-y-5 animate-fadeIn">
+          <div className="space-y-5 animate-fade-in">
             {/* Tone Selector Pills */}
             <div>
               <label className="block text-xs font-semibold text-gray-300 mb-2">

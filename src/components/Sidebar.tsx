@@ -1,5 +1,4 @@
 'use client';
-/* eslint-disable react-hooks/set-state-in-effect */
 
 import React, { useState, useEffect } from 'react';
 import {
@@ -48,8 +47,13 @@ export function Sidebar({
   const [remainingFree, setRemainingFree] = useState(5);
 
   useEffect(() => {
-    setIsPro(isProUser());
-    setRemainingFree(getFreeGenerationsRemaining());
+    const refreshUsage = () => {
+      setIsPro(isProUser());
+      setRemainingFree(getFreeGenerationsRemaining());
+    };
+    refreshUsage();
+    window.addEventListener('covercraft-usage-change', refreshUsage);
+    return () => window.removeEventListener('covercraft-usage-change', refreshUsage);
   }, [activeStep]);
 
   const steps = [

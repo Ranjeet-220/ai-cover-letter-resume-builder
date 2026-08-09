@@ -1,5 +1,4 @@
 'use client';
-/* eslint-disable react-hooks/set-state-in-effect */
 
 import React, { useState, useEffect } from 'react';
 import {
@@ -34,9 +33,33 @@ export function TopHeader({
   const [remainingFree, setRemainingFree] = useState(5);
 
   useEffect(() => {
-    setIsPro(isProUser());
-    setRemainingFree(getFreeGenerationsRemaining());
+    const refreshUsage = () => {
+      setIsPro(isProUser());
+      setRemainingFree(getFreeGenerationsRemaining());
+    };
+    refreshUsage();
+    window.addEventListener('covercraft-usage-change', refreshUsage);
+    return () => window.removeEventListener('covercraft-usage-change', refreshUsage);
   }, [activeStep]);
+
+  const [selectedModel, setSelectedModel] = useState('gemini-3.1-flash-lite');
+
+  useEffect(() => {
+    const refreshModel = () => {
+      if (typeof window !== 'undefined') {
+        setSelectedModel(localStorage.getItem('covercraft_selected_model') || 'gemini-3.1-flash-lite');
+      }
+    };
+    refreshModel();
+    window.addEventListener('covercraft-settings-change', refreshModel);
+    return () => window.removeEventListener('covercraft-settings-change', refreshModel);
+  }, []);
+
+  const getModelBadge = () => {
+    if (selectedModel === 'gemini-3.1-pro-preview') return 'GEMINI 3.1 PRO';
+    if (selectedModel === 'claude-sonnet-4-20250514') return 'CLAUDE SONNET 4';
+    return 'GEMINI 3.1 FLASH LITE';
+  };
 
   const getStepTitle = () => {
     switch (activeStep) {
@@ -77,7 +100,7 @@ export function TopHeader({
           <h2 className="text-xs font-extrabold text-white flex items-center gap-2 tracking-tight truncate">
             <span className="gradient-text-animated truncate">{getStepTitle()}</span>
             <span className="hidden sm:inline-flex text-[9px] uppercase font-bold px-2 py-0.5 rounded bg-zinc-900 text-zinc-300 border border-zinc-800 shrink-0">
-              GEMINI 3.1 FLASH LITE
+              {getModelBadge()}
             </span>
           </h2>
           <p className="text-[10px] text-zinc-400 hidden md:block">

@@ -1,8 +1,8 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { X, Check, Layout, Sparkles, FileText, ShieldCheck, Award, Eye, Filter } from 'lucide-react';
-import { RESUME_TEMPLATES, ResumeTemplate, ResumeTemplateId } from '../lib/resumeTemplates';
+import { X, Check, Layout, Sparkles, Filter } from 'lucide-react';
+import { RESUME_TEMPLATES, ResumeTemplateId } from '../lib/resumeTemplates';
 
 interface ResumeTemplateSelectorProps {
   isOpen: boolean;
@@ -53,7 +53,7 @@ export function ResumeTemplateSelector({
   });
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-fadeIn">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-fade-in">
       {/* Backdrop click dismiss */}
       <div className="absolute inset-0" onClick={onClose} />
 
@@ -161,7 +161,7 @@ export function ResumeTemplateSelector({
                       
                       {/* Emerald Split Sidebar Layout Preview */}
                       {tmpl.id === 'emerald-sidebar' && (
-                        <div className="w-full h-full bg-white rounded flex text-[6px] font-serif text-black shadow-inner overflow-hidden">
+                        <div className="template-wireframe w-full h-full bg-white rounded flex text-[6px] font-serif text-black shadow-inner overflow-hidden">
                           <div className="w-1/3 bg-[#064e3b] text-white p-1 flex flex-col justify-between">
                             <div className="text-center space-y-0.5">
                               <div className="w-3 h-3 rounded-full bg-white mx-auto"></div>
@@ -184,7 +184,7 @@ export function ResumeTemplateSelector({
 
                       {/* Mint Modern Banner Layout Preview */}
                       {tmpl.id === 'mint-banner' && (
-                        <div className="w-full h-full bg-white rounded p-1.5 text-[6px] font-sans text-black flex flex-col justify-between shadow-inner">
+                        <div className="template-wireframe w-full h-full bg-white rounded p-1.5 text-[6px] font-sans text-black flex flex-col justify-between shadow-inner">
                           <div className="flex bg-[#2dd4bf] text-black rounded p-1 items-center gap-1">
                             <div className="w-4 h-4 bg-teal-800 rounded shrink-0"></div>
                             <div>
@@ -207,7 +207,7 @@ export function ResumeTemplateSelector({
 
                       {/* Executive Blue Classic Layout Preview */}
                       {tmpl.id === 'executive-blue-classic' && (
-                        <div className="w-full h-full bg-white rounded p-2 text-[6px] font-sans text-black flex flex-col justify-between shadow-inner">
+                        <div className="template-wireframe w-full h-full bg-white rounded p-2 text-[6px] font-sans text-black flex flex-col justify-between shadow-inner">
                           <div className="flex justify-between items-start border-b border-blue-600 pb-1">
                             <div>
                               <div className="font-extrabold text-[8px] text-blue-700">HERMAN WALTON</div>
@@ -238,7 +238,7 @@ export function ResumeTemplateSelector({
 
                       {/* Harvard Ivy Layout Preview */}
                       {tmpl.id === 'harvard-ivy' && (
-                        <div className="w-full h-full bg-white rounded p-2 text-[6px] font-serif text-black flex flex-col justify-between shadow-inner">
+                        <div className="template-wireframe w-full h-full bg-white rounded p-2 text-[6px] font-serif text-black flex flex-col justify-between shadow-inner">
                           <div className="text-center space-y-0.5 border-b border-black pb-1">
                             <div className="font-bold tracking-wider uppercase text-[7px]">ALEX VANCE</div>
                             <div className="text-[5px] text-zinc-700">alex@example.com | (555) 234-5678 | San Francisco, CA</div>
@@ -262,7 +262,7 @@ export function ResumeTemplateSelector({
 
                       {/* Silicon Valley Layout Preview */}
                       {tmpl.id === 'silicon-valley' && (
-                        <div className="w-full h-full bg-white rounded p-2 text-[6px] font-sans text-black flex flex-col justify-between shadow-inner">
+                        <div className="template-wireframe w-full h-full bg-white rounded p-2 text-[6px] font-sans text-black flex flex-col justify-between shadow-inner">
                           <div className="flex justify-between items-start border-l-2 border-black pl-1.5">
                             <div>
                               <div className="font-extrabold text-[8px]">ALEX VANCE</div>
@@ -289,7 +289,7 @@ export function ResumeTemplateSelector({
 
                       {/* Europass Exec Layout Preview */}
                       {tmpl.id === 'europass-exec' && (
-                        <div className="w-full h-full bg-white rounded text-[6px] font-sans text-black flex flex-col justify-between shadow-inner overflow-hidden">
+                        <div className="template-wireframe w-full h-full bg-white rounded text-[6px] font-sans text-black flex flex-col justify-between shadow-inner overflow-hidden">
                           <div className="bg-zinc-900 text-white p-2 flex justify-between items-center">
                             <div>
                               <div className="font-bold text-[7px]">ALEX VANCE</div>
@@ -311,7 +311,7 @@ export function ResumeTemplateSelector({
 
                       {/* ATS Compact Layout Preview */}
                       {tmpl.id === 'ats-compact' && (
-                        <div className="w-full h-full bg-white rounded p-2 text-[5.5px] font-sans text-black flex flex-col justify-between shadow-inner">
+                        <div className="template-wireframe w-full h-full bg-white rounded p-2 text-[5.5px] font-sans text-black flex flex-col justify-between shadow-inner">
                           <div className="border-b border-zinc-400 pb-0.5">
                             <div className="font-bold text-[7px]">ALEX VANCE</div>
                             <div className="text-[4.5px] text-zinc-800">alex@example.com | (555) 234-5678 | San Francisco, CA</div>
@@ -331,7 +331,7 @@ export function ResumeTemplateSelector({
 
                       {/* Creative Product Layout Preview */}
                       {tmpl.id === 'creative-product' && (
-                        <div className="w-full h-full bg-white rounded text-[6px] font-sans text-black flex shadow-inner overflow-hidden">
+                        <div className="template-wireframe w-full h-full bg-white rounded text-[6px] font-sans text-black flex shadow-inner overflow-hidden">
                           <div className="w-2 bg-zinc-950 h-full shrink-0" />
                           <div className="p-2 flex-1 flex flex-col justify-between">
                             <div className="flex justify-between items-center border-b border-zinc-200 pb-1">

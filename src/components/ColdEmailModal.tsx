@@ -1,5 +1,5 @@
 'use client';
-/* eslint-disable react-hooks/set-state-in-effect, @typescript-eslint/no-explicit-any */
+/* eslint-disable react-hooks/set-state-in-effect */
 
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import {
@@ -60,6 +60,9 @@ export function ColdEmailModal({
 
       setLoading(true);
       setError(null);
+      setCopiedSubject(false);
+      setCopiedBody(false);
+      setCopiedFull(false);
       const requestId = ++requestIdRef.current;
 
       try {
@@ -82,10 +85,10 @@ export function ColdEmailModal({
           }),
         });
 
-        const data = await res.json();
+        const data = await res.json().catch(() => null);
 
         if (requestId !== requestIdRef.current) return;
-        if (res.ok && data.success && data.coldEmail && data.linkedInInMail) {
+        if (res.ok && data && data.success && data.coldEmail && data.linkedInInMail) {
           setColdEmail(data.coldEmail);
           setLinkedInInMail(data.linkedInInMail);
           setGeneratedWith(data.generatedWith || 'fallback');
@@ -121,6 +124,15 @@ export function ColdEmailModal({
     }
   }, [isOpen]);
 
+  useEffect(() => {
+    if (!isOpen) return;
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') onClose();
+    };
+    window.addEventListener('keydown', onKeyDown);
+    return () => window.removeEventListener('keydown', onKeyDown);
+  }, [isOpen, onClose]);
+
   if (!isOpen) return null;
 
   const currentMessage = activeTab === 'email' ? coldEmail : linkedInInMail;
@@ -129,15 +141,20 @@ export function ColdEmailModal({
     if (!text) return;
     try {
       await navigator.clipboard.writeText(text);
+      const reset = () => {
+        setCopiedSubject(false);
+        setCopiedBody(false);
+        setCopiedFull(false);
+      };
       if (target === 'subject') {
         setCopiedSubject(true);
-        setTimeout(() => setCopiedSubject(false), 2000);
+        setTimeout(reset, 2000);
       } else if (target === 'body') {
         setCopiedBody(true);
-        setTimeout(() => setCopiedBody(false), 2000);
+        setTimeout(reset, 2000);
       } else {
         setCopiedFull(true);
-        setTimeout(() => setCopiedFull(false), 2000);
+        setTimeout(reset, 2000);
       }
     } catch (err) {
       console.error('Failed to copy to clipboard', err);
@@ -145,8 +162,16 @@ export function ColdEmailModal({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-fadeIn">
-      <div className="relative w-full max-w-2xl bg-zinc-950 border border-zinc-800 rounded-3xl shadow-2xl overflow-hidden text-white flex flex-col max-h-[90vh]">
+    <div
+      onClick={(e) => {
+        if (e.target === e.currentTarget) onClose();
+      }}
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-fade-in"
+    >
+      <div
+        onClick={(e) => e.stopPropagation()}
+        className="relative w-full max-w-2xl bg-zinc-950 border border-zinc-800 rounded-3xl shadow-2xl overflow-hidden text-white flex flex-col max-h-[90vh]"
+      >
         
         {/* Black & White Header */}
         <div className="bg-black p-5 border-b border-zinc-800 flex items-center justify-between shrink-0">
@@ -214,7 +239,12 @@ export function ColdEmailModal({
         <div className="px-5 pt-3 bg-zinc-950 border-b border-zinc-800 flex items-center justify-between shrink-0">
           <div className="flex items-center gap-2">
             <button
-              onClick={() => setActiveTab('email')}
+              onClick={() => {
+                setActiveTab('email');
+                setCopiedSubject(false);
+                setCopiedBody(false);
+                setCopiedFull(false);
+              }}
               className={`flex items-center gap-2 px-4 py-2 text-xs font-bold rounded-t-xl border-b-2 transition ${
                 activeTab === 'email'
                   ? 'border-white text-white bg-zinc-900'
@@ -231,7 +261,12 @@ export function ColdEmailModal({
             </button>
 
             <button
-              onClick={() => setActiveTab('linkedin')}
+              onClick={() => {
+                setActiveTab('linkedin');
+                setCopiedSubject(false);
+                setCopiedBody(false);
+                setCopiedFull(false);
+              }}
               className={`flex items-center gap-2 px-4 py-2 text-xs font-bold rounded-t-xl border-b-2 transition ${
                 activeTab === 'linkedin'
                   ? 'border-white text-white bg-zinc-900'

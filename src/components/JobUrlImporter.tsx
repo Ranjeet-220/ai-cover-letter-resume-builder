@@ -6,7 +6,6 @@ import {
   Link as LinkIcon,
   Sparkles,
   Loader2,
-  Check,
   AlertCircle,
   X,
   Building2,
@@ -115,10 +114,10 @@ export function JobUrlImporter({
         }),
       });
 
-      const data = await res.json();
+      const data = await res.json().catch(() => null);
 
-      if (!res.ok || !data.success) {
-        throw new Error(data.error || 'Failed to parse job details from URL.');
+      if (!res.ok || !data || !data.success) {
+        throw new Error((data && data.error) || 'Failed to parse job details from URL.');
       }
 
       const imported: ImportedJobData = {

@@ -123,10 +123,12 @@ export function ApplicationTracker({ onSelectLetter, onCreateNew }: ApplicationT
   // Filtered letters
   const filteredLetters = useMemo(() => {
     return letters.filter((l) => {
+      const company = (l.company || '').toLowerCase();
+      const jobTitle = (l.jobTitle || '').toLowerCase();
+      const title = (l.title || '').toLowerCase();
+      const query = searchQuery.toLowerCase();
       const matchesSearch =
-        l.company.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        l.jobTitle.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        l.title.toLowerCase().includes(searchQuery.toLowerCase());
+        company.includes(query) || jobTitle.includes(query) || title.includes(query);
       const matchesStatus = statusFilter === 'ALL' || l.status === statusFilter;
       return matchesSearch && matchesStatus;
     });
@@ -336,12 +338,12 @@ export function ApplicationTracker({ onSelectLetter, onCreateNew }: ApplicationT
                       <div>
                         <div className="flex items-start justify-between">
                           <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-zinc-200 bg-zinc-900 px-2 py-0.5 rounded border border-zinc-700">
-                            {letter.matchScore}% Match
+                            {letter.matchScore ?? 0}% Match
                           </span>
 
                           <button
                             onClick={() => setDeletingId(letter.id)}
-                            className="text-zinc-500 hover:text-white p-1 opacity-0 group-hover:opacity-100 transition cursor-pointer"
+                            className="text-zinc-500 hover:text-white p-1 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 focus-visible:opacity-100 transition cursor-pointer"
                             title="Delete letter"
                           >
                             <Trash2 className="w-3.5 h-3.5" />
@@ -349,9 +351,9 @@ export function ApplicationTracker({ onSelectLetter, onCreateNew }: ApplicationT
                         </div>
 
                         <h5 className="text-sm font-bold text-white mt-2.5 group-hover:text-white transition line-clamp-1">
-                          {letter.company}
+                          {letter.company || "Untitled"}
                         </h5>
-                        <p className="text-xs text-zinc-400 line-clamp-1 mt-0.5">{letter.jobTitle}</p>
+                        <p className="text-xs text-zinc-400 line-clamp-1 mt-0.5">{letter.jobTitle || "Role"}</p>
                       </div>
 
                       <div className="text-[11px] text-zinc-500 font-mono flex items-center gap-1.5 pt-2 border-t border-zinc-900">
@@ -411,7 +413,7 @@ export function ApplicationTracker({ onSelectLetter, onCreateNew }: ApplicationT
                   return (
                     <tr key={letter.id} className="hover:bg-zinc-900/60 transition">
                       <td className="p-4">
-                        <div className="font-bold text-white text-sm">{letter.company}</div>
+                        <div className="font-bold text-white text-sm">{letter.company || "Untitled"}</div>
                         <div className="text-zinc-400 text-xs">{letter.jobTitle}</div>
                       </td>
                       <td className="p-4">
@@ -428,7 +430,7 @@ export function ApplicationTracker({ onSelectLetter, onCreateNew }: ApplicationT
                         </select>
                       </td>
                       <td className="p-4">
-                        <span className="font-mono font-bold text-white">{letter.matchScore}%</span>
+                        <span className="font-mono font-bold text-white">{letter.matchScore ?? 0}%</span>
                       </td>
                       <td className="p-4 text-zinc-400 font-mono">
                         {new Date(letter.updatedAt).toLocaleDateString('en-US', {

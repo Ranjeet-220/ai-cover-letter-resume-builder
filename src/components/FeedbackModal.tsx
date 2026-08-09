@@ -9,9 +9,7 @@ import {
   CheckCircle2,
   MessageSquareHeart,
   Sparkles,
-  Smile,
   Loader2,
-  MessageCircle,
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
 
@@ -133,7 +131,7 @@ export function FeedbackModal({
 
     try {
       const feedbackPayload: FeedbackData = {
-        id: `feedback_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+        id: `feedback_${Date.now()}_${Math.random().toString(36).slice(2, 11)}`,
         rating,
         category,
         comment: comment.trim(),
@@ -169,7 +167,11 @@ export function FeedbackModal({
 
       setIsSubmitted(true);
       if (onSubmitSuccess) {
-        onSubmitSuccess(feedbackPayload);
+        try {
+          onSubmitSuccess(feedbackPayload);
+        } catch (err) {
+          console.warn('onSubmitSuccess callback failed:', err);
+        }
       }
     } catch (err) {
       console.error('Submission error:', err);
@@ -182,12 +184,16 @@ export function FeedbackModal({
   const activeRating = hoverRating || rating;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md animate-in fade-in duration-200">
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md animate-in fade-in duration-200"
+      onClick={() => { if (!isSubmitting) onClose(); }}
+    >
       <div
-        className="relative w-full max-w-lg bg-slate-900 border border-slate-800 rounded-3xl shadow-2xl overflow-hidden text-slate-100 transition-all scale-100"
+        className="relative w-full max-w-lg bg-slate-900 border border-slate-800 rounded-3xl shadow-2xl overflow-hidden text-slate-100 transition-all scale-100 max-h-[85vh] flex flex-col"
         role="dialog"
         aria-modal="true"
         aria-labelledby="feedback-modal-title"
+        onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
         <div className="bg-gradient-to-r from-indigo-900/50 via-purple-900/40 to-slate-900 p-6 border-b border-slate-800 flex items-start justify-between">

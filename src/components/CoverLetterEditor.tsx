@@ -4,7 +4,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import {
   FileText,
-  Sparkles,
   Download,
   Copy,
   Check,
@@ -15,15 +14,13 @@ import {
   Scissors,
   CheckCircle,
   Award,
-  Layers,
-  Cpu,
 } from 'lucide-react';
 import { CoverLetter, ResumeProfile } from '../types';
 import { saveCoverLetter, ApplicationStatus } from '../lib/storage';
-import { PDF_TEMPLATES, PdfTemplate, getPdfTemplateById } from '../lib/pdfTemplates';
 import { ColdEmailModal } from './ColdEmailModal';
 import { AtsMatchAnalyzer } from './AtsMatchAnalyzer';
 import { calculateAtsMatchScore, weaveKeywordIntoText, AtsAnalysisResult } from '../lib/atsUtils';
+import { useToast } from './Toast';
 
 interface CoverLetterEditorProps {
   initialLetter?: CoverLetter | null;
@@ -45,7 +42,6 @@ export function CoverLetterEditor({
   const [tone, setTone] = useState(initialLetter?.tone || 'professional');
 
   const [viewMode, setViewMode] = useState<'split' | 'edit' | 'paper'>('split');
-  const [selectedTemplateId, setSelectedTemplateId] = useState<string>('modern-indigo');
   const [isImproving, setIsImproving] = useState(false);
   const [copied, setCopied] = useState(false);
   const [showColdEmailModal, setShowColdEmailModal] = useState(false);
@@ -57,37 +53,53 @@ export function CoverLetterEditor({
 
   const jobDescription = initialLetter?.jobDescription || '';
   const paperRef = useRef<HTMLDivElement>(null);
+  const loadedLetterIdRef = useRef<string | null>(null);
+  const atsTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const { showToast } = useToast();
 
   useEffect(() => {
     setCurrentDate(new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }));
-    if (initialLetter) {
-      setContent(initialLetter.content);
-      setCompany(initialLetter.targetCompany);
-      setJobTitle(initialLetter.jobTitle);
-      setTone(initialLetter.tone);
+    const letterId = initialLetter?.id ?? null;
+    if (letterId !== loadedLetterIdRef.current) {
+      loadedLetterIdRef.current = letterId;
+      if (initialLetter) {
+        setContent(initialLetter.content);
+        setCompany(initialLetter.targetCompany);
+        setJobTitle(initialLetter.jobTitle);
+        setTone(initialLetter.tone);
+      }
     }
   }, [initialLetter]);
+
+  useEffect(() => {
+    return () => {
+      if (atsTimerRef.current) clearTimeout(atsTimerRef.current);
+    };
+  }, []);
 
   // Recalculate ATS Match Score whenever content changes
   useEffect(() => {
     if (content.trim()) {
       const result = calculateAtsMatchScore(content, jobDescription, jobTitle);
       setAtsResult(result);
+    } else {
+      setAtsResult(null);
     }
   }, [content, jobDescription, jobTitle]);
 
   const handleWeaveKeyword = (keyword: string) => {
-    const updatedContent = weaveKeywordIntoText(content, keyword);
-    setContent(updatedContent);
+    setContent((prev) => weaveKeywordIntoText(prev, keyword));
   };
 
   const handleWeaveAllKeywords = () => {
     if (!atsResult || atsResult.missingKeywords.length === 0) return;
-    let updated = content;
-    atsResult.missingKeywords.forEach((kw) => {
-      updated = weaveKeywordIntoText(updated, kw);
+    setContent((prev) => {
+      let updated = prev;
+      atsResult.missingKeywords.forEach((kw) => {
+        updated = weaveKeywordIntoText(updated, kw);
+      });
+      return updated;
     });
-    setContent(updated);
   };
 
   const handleImprove = async (action: 'confident' | 'shorten' | 'leadership' | 'grammar') => {
@@ -110,15 +122,18 @@ export function CoverLetterEditor({
         }),
       });
 
-      const data = await res.json();
+      const data = await res.json().catch(() => null);
       if (!res.ok) {
-        throw new Error(data.error || 'Failed to improve text');
+        throw new Error((data && data.error) || 'Failed to improve text');
       }
-      if (data.improvedText) {
+      if (data && data.improvedText) {
         setContent(data.improvedText);
+      } else {
+        throw new Error('The AI returned no improved text.');
       }
     } catch (err) {
       console.error(err);
+      showToast('Improvement failed', err instanceof Error ? err.message : 'Please try again.', 'error');
     } finally {
       setIsImproving(false);
     }
@@ -138,37 +153,53 @@ export function CoverLetterEditor({
       content,
       matchScore: currentAts.score,
       missingKeywords: currentAts.missingKeywords,
-      status: (initialLetter?.status as any) || 'Draft',
+      status: initialLetter?.status || 'draft',
       createdAt: initialLetter?.createdAt || new Date().toISOString(),
       updatedAt: new Date().toISOString(),
       resumeProfileId: initialLetter?.resumeProfileId,
     };
 
-    await saveCoverLetter({
-      id: letterToSave.id,
-      title: letterToSave.title,
-      company: letterToSave.targetCompany,
-      jobTitle: letterToSave.jobTitle,
-      jobDescription: letterToSave.jobDescription,
-      content: letterToSave.content,
-      status: (letterToSave.status
-        ? letterToSave.status.charAt(0).toUpperCase() + letterToSave.status.slice(1)
-        : 'Draft') as ApplicationStatus,
-      matchScore: letterToSave.matchScore,
-      createdAt: letterToSave.createdAt,
-      updatedAt: letterToSave.updatedAt,
-      resumeProfileId: letterToSave.resumeProfileId,
-    });
-    if (onSave) onSave(letterToSave);
+    try {
+      await saveCoverLetter({
+        id: letterToSave.id,
+        title: letterToSave.title,
+        company: letterToSave.targetCompany,
+        jobTitle: letterToSave.jobTitle,
+        jobDescription: letterToSave.jobDescription,
+        content: letterToSave.content,
+        status: letterToSave.status
+          ? (letterToSave.status.charAt(0).toUpperCase() + letterToSave.status.slice(1) as ApplicationStatus)
+          : 'Draft',
+        matchScore: letterToSave.matchScore,
+        createdAt: letterToSave.createdAt,
+        updatedAt: letterToSave.updatedAt,
+        resumeProfileId: letterToSave.resumeProfileId,
+      });
+      if (onSave) onSave(letterToSave);
+      showToast('Draft saved', 'Your cover letter was saved successfully.');
+    } catch (err) {
+      console.error(err);
+      showToast('Save failed', 'Could not save your cover letter.', 'error');
+    }
   };
 
-  const handleCopy = () => {
-    navigator.clipboard.writeText(content);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
+  const handleCopy = async () => {
+    if (!content.trim()) return;
+    try {
+      await navigator.clipboard.writeText(content);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch (err) {
+      console.error(err);
+      showToast('Copy failed', 'Clipboard access was blocked.', 'error');
+    }
   };
 
   const handleExportPdf = async () => {
+    if (viewMode === 'edit') {
+      setViewMode('split');
+      await new Promise((resolve) => setTimeout(resolve, 100));
+    }
     if (!paperRef.current) return;
     try {
       const html2canvas = (await import('html2canvas')).default;
@@ -198,6 +229,7 @@ export function CoverLetterEditor({
       pdf.save(`${company.replace(/\s+/g, '_')}_Cover_Letter.pdf`);
     } catch (err) {
       console.error(err);
+      showToast('Export failed', 'Could not generate the PDF. Please try again.', 'error');
     }
   };
 
@@ -348,7 +380,8 @@ export function CoverLetterEditor({
                 setIsCalculatingAts(true);
                 const res = calculateAtsMatchScore(content, jobDescription, jobTitle);
                 setAtsResult(res);
-                setTimeout(() => setIsCalculatingAts(false), 300);
+                if (atsTimerRef.current) clearTimeout(atsTimerRef.current);
+                atsTimerRef.current = setTimeout(() => setIsCalculatingAts(false), 300);
               }}
               isCalculating={isCalculatingAts}
             />

@@ -53,15 +53,17 @@ export function canGenerate(): boolean {
 export function incrementUsageCount(): number {
   if (typeof window === 'undefined') return 0;
   try {
+    if (isProUser()) return getCreditsRemaining();
     const credits = getCreditsRemaining();
     if (credits > 0) {
       localStorage.setItem(CREDITS_KEY, String(credits - 1));
-      return credits - 1;
+    } else {
+      const current = getFreeGenerationsUsed();
+      const updated = Math.min(Number.MAX_SAFE_INTEGER, current + 1);
+      localStorage.setItem(USAGE_KEY, updated.toString());
     }
-    const current = getFreeGenerationsUsed();
-    const updated = Math.min(Number.MAX_SAFE_INTEGER, current + 1);
-    localStorage.setItem(USAGE_KEY, updated.toString());
-    return updated;
+    window.dispatchEvent(new CustomEvent('covercraft-usage-change'));
+    return getCreditsRemaining();
   } catch {
     return getFreeGenerationsUsed();
   }

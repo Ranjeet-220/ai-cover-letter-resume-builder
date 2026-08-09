@@ -5,7 +5,6 @@ import {
   Check,
   Plus,
   Sparkles,
-  Zap,
   RotateCcw,
   TrendingUp,
   AlertCircle,
@@ -14,7 +13,6 @@ import {
   ChevronUp,
   Loader2,
   Wand2,
-  Filter,
   ShieldCheck,
   Flame,
 } from 'lucide-react';
@@ -59,23 +57,27 @@ export function AtsMatchAnalyzer({
   const [showDetails, setShowDetails] = useState(false);
   const [filterMode, setFilterMode] = useState<'all' | 'matched' | 'missing' | 'recommended'>('all');
 
-  // Compute fallback / computed values if props aren't provided explicitly
+  // Compute fallback / computed values if props aren't provided explicitly.
+  // All-or-nothing: if only part of the analysis is provided, recompute everything
+  // so the displayed score always matches the displayed keyword lists.
+  const usesProvidedAnalysis =
+    propScore !== undefined &&
+    propMatchedKeywords !== undefined &&
+    propMissingKeywords !== undefined;
+
   const computedAnalysis: AtsAnalysisResult = React.useMemo(() => {
-    if (
-      propScore !== undefined &&
-      propMatchedKeywords !== undefined &&
-      propMissingKeywords !== undefined
-    ) {
+    if (usesProvidedAnalysis) {
       return {
-        score: propScore,
-        matchedKeywords: propMatchedKeywords,
-        missingKeywords: propMissingKeywords,
+        score: propScore as number,
+        matchedKeywords: propMatchedKeywords as string[],
+        missingKeywords: propMissingKeywords as string[],
         strengths: propStrengths || [],
         recommendations: propRecommendations || [],
       };
     }
     return calculateAtsMatchScore(documentText, jobDescription, jobTitle);
   }, [
+    usesProvidedAnalysis,
     propScore,
     propMatchedKeywords,
     propMissingKeywords,
@@ -86,9 +88,13 @@ export function AtsMatchAnalyzer({
     jobTitle,
   ]);
 
-  const score = propScore !== undefined ? propScore : computedAnalysis.score;
-  const matchedKeywords = propMatchedKeywords || computedAnalysis.matchedKeywords;
-  const missingKeywords = propMissingKeywords || computedAnalysis.missingKeywords;
+  const score = usesProvidedAnalysis ? (propScore as number) : computedAnalysis.score;
+  const matchedKeywords = usesProvidedAnalysis
+    ? (propMatchedKeywords as string[])
+    : computedAnalysis.matchedKeywords;
+  const missingKeywords = usesProvidedAnalysis
+    ? (propMissingKeywords as string[])
+    : computedAnalysis.missingKeywords;
   
   // Synthesize recommended keywords (top priority missing or industry standard high-impact keywords)
   const recommendedKeywords = React.useMemo(() => {
@@ -177,10 +183,15 @@ export function AtsMatchAnalyzer({
   const handleWeaveAllClick = () => {
     if (onWeaveAllKeywords) {
       onWeaveAllKeywords();
-    } else if (onWeaveKeyword && missingKeywords.length > 0) {
-      missingKeywords.forEach((kw, idx) => {
-        setTimeout(() => onWeaveKeyword(kw), idx * 150);
-      });
+      return;
+    }
+    if (!onWeaveKeyword || missingKeywords.length === 0) return;
+    // Stagger weaves so each functional update builds on the previous result.
+    missingKeywords.forEach((kw, idx) => {
+      setTimeout(() => onWeaveKeyword(kw), idx * 150);
+    });
+    if (onRecalculate) {
+      setTimeout(() => onRecalculate(), missingKeywords.length * 150 + 100);
     }
   };
 

@@ -27,6 +27,15 @@ export function ApiSettingsModal({ isOpen, onClose, onSave }: ApiSettingsModalPr
     }
   }, [isOpen]);
 
+  useEffect(() => {
+    if (!isOpen) return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') onClose();
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isOpen, onClose]);
+
   if (!isOpen) return null;
 
   const handleSave = (e: React.FormEvent) => {
@@ -35,6 +44,7 @@ export function ApiSettingsModal({ isOpen, onClose, onSave }: ApiSettingsModalPr
       localStorage.setItem('covercraft_selected_model', selectedModel);
       localStorage.setItem('covercraft_gemini_api_key', geminiKey.trim());
       localStorage.setItem('covercraft_anthropic_api_key', anthropicKey.trim());
+      window.dispatchEvent(new CustomEvent('covercraft-settings-change'));
     }
     setSavedSuccess(true);
     if (onSave) onSave(selectedModel, geminiKey.trim(), anthropicKey.trim());
@@ -45,8 +55,11 @@ export function ApiSettingsModal({ isOpen, onClose, onSave }: ApiSettingsModalPr
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/90 backdrop-blur-md animate-fade-in">
-      <div className="relative w-full max-w-lg bg-black border border-zinc-800 rounded-3xl shadow-2xl overflow-hidden text-zinc-100">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/90 backdrop-blur-md animate-fade-in" onClick={onClose}>
+      <div
+        className="relative w-full max-w-lg bg-black border border-zinc-800 rounded-3xl shadow-2xl overflow-hidden text-zinc-100 max-h-[85vh] flex flex-col"
+        onClick={(e) => e.stopPropagation()}
+      >
         
         {/* Header */}
         <div className="bg-zinc-950 p-5 border-b border-zinc-800 flex items-center justify-between">
@@ -72,7 +85,7 @@ export function ApiSettingsModal({ isOpen, onClose, onSave }: ApiSettingsModalPr
         </div>
 
         {/* Content */}
-        <form onSubmit={handleSave} className="p-6 space-y-5">
+        <form onSubmit={handleSave} className="p-6 space-y-5 overflow-y-auto min-h-0">
           {savedSuccess && (
             <div className="p-3 rounded-xl bg-zinc-900 border border-zinc-700 text-white text-xs flex items-center gap-2 font-bold">
               <Check className="w-4 h-4 text-white" />

@@ -3,7 +3,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import {
   GraduationCap,
-  Sparkles,
   Plus,
   Download,
   Zap,
@@ -12,17 +11,11 @@ import {
   Eye,
   Edit3,
   Type,
-  Sliders,
-  Scissors,
-  Maximize2,
-  Minimize2,
-  ZoomIn,
-  ZoomOut,
-  X,
 } from 'lucide-react';
-import { getFreeGenerationsRemaining, canGenerate, incrementUsageCount, isProUser } from '../lib/usage';
+import { canGenerate, incrementUsageCount, isProUser } from '../lib/usage';
 import { AuthBillingModal } from './AuthBillingModal';
 import { ApiSettingsModal } from './ApiSettingsModal';
+import { useToast } from './Toast';
 
 interface PublicationItem {
   id: string;
@@ -156,11 +149,9 @@ export function CvBuilder() {
   const [docFontFamily, setDocFontFamily] = useState<string>('system-ui');
   const [docFontSize, setDocFontSize] = useState<'sm' | 'md' | 'lg'>('md');
   const [docLineHeight, setDocLineHeight] = useState<'tight' | 'normal' | 'relaxed'>('normal');
-  const [docPadding, setDocPadding] = useState<'p-6' | 'p-8' | 'p-12'>('p-8');
-  const [showPageBreaks, setShowPageBreaks] = useState<boolean>(true);
-  const [splitRatio, setSplitRatio] = useState<'50-50' | '60-40' | '40-60'>('50-50');
 
   const paperRef = useRef<HTMLDivElement>(null);
+  const { showToast } = useToast();
 
   useEffect(() => {
     try {
@@ -172,6 +163,17 @@ export function CvBuilder() {
     } catch {
       setSelectedModel('gemini-3.1-flash-lite');
     }
+    const refreshModel = () => {
+      try {
+        setSelectedModel(
+          localStorage.getItem('covercraft_selected_model') || 'gemini-3.1-flash-lite'
+        );
+      } catch {
+        setSelectedModel('gemini-3.1-flash-lite');
+      }
+    };
+    window.addEventListener('covercraft-settings-change', refreshModel);
+    return () => window.removeEventListener('covercraft-settings-change', refreshModel);
   }, []);
 
   const getCvStyle = (): React.CSSProperties => {
@@ -219,18 +221,22 @@ export function CvBuilder() {
         }),
       });
 
-      const data = await res.json();
+      const data = await res.json().catch(() => null);
       if (!res.ok) {
-        throw new Error(data.error || 'Failed to generate biography');
+        throw new Error((data && data.error) || 'Failed to generate biography');
       }
-      if (data.summary) {
+      if (data && data.summary) {
         setCvData((prev) => ({ ...prev, biography: data.summary }));
         if (!isProUser()) {
           incrementUsageCount();
         }
+        showToast('Biography generated', 'Your executive biography was updated.');
+      } else {
+        throw new Error('The AI returned no summary.');
       }
     } catch (err) {
       console.error(err);
+      showToast('Generation failed', err instanceof Error ? err.message : 'Please try again.', 'error');
     } finally {
       setLoadingAi(false);
     }
@@ -345,13 +351,7 @@ export function CvBuilder() {
       </div>
 
         {activeTab === 'editor' && (
-        <div className={`grid grid-cols-1 gap-8 ${
-          splitRatio === '60-40'
-            ? 'lg:grid-cols-12 [&>div:first-child]:lg:col-span-7 [&>div:last-child]:lg:col-span-5'
-            : splitRatio === '40-60'
-            ? 'lg:grid-cols-12 [&>div:first-child]:lg:col-span-5 [&>div:last-child]:lg:col-span-7'
-            : 'lg:grid-cols-12 [&>div:first-child]:lg:col-span-6 [&>div:last-child]:lg:col-span-6'
-        }`}>
+        <div className="grid grid-cols-1 gap-8 lg:grid-cols-12 [&>div:first-child]:lg:col-span-6 [&>div:last-child]:lg:col-span-6">
           {/* Form */}
           <div className="space-y-6">
             
@@ -703,10 +703,8 @@ export function CvBuilder() {
 
           <div
             ref={paperRef}
-            style={{ fontFamily: docFontFamily }}
-            className={`cover-letter-paper p-8 rounded-xl bg-white text-black shadow-2xl min-h-[850px] space-y-5 ring-1 ring-zinc-300/30 text-${
-              docFontSize === 'sm' ? '[11px]' : docFontSize === 'lg' ? '[13px]' : 'xs'
-            } leading-${docLineHeight}`}
+            style={{ fontFamily: docFontFamily, fontSize: docFontSize === 'sm' ? '11px' : docFontSize === 'lg' ? '13px' : '12px', lineHeight: docLineHeight === 'relaxed' ? '1.8' : docLineHeight === 'tight' ? '1.25' : '1.5' }}
+            className={`cover-letter-paper p-8 rounded-xl bg-white text-black shadow-2xl min-h-[850px] space-y-5 ring-1 ring-zinc-300/30`}
           >
             <div className="border-b-2 border-black pb-4">
               <h1 className="text-2xl font-extrabold tracking-tight text-black uppercase">{cvData.fullName}</h1>

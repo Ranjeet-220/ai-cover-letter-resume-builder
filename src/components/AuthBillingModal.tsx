@@ -1,7 +1,7 @@
 'use client';
 /* eslint-disable react-hooks/set-state-in-effect */
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { X, Zap, Check, Shield, Mail, CreditCard } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import { getErrorMessage, isRecord } from '../lib/errors';
@@ -29,14 +29,29 @@ export function AuthBillingModal({
   const [authMode, setAuthMode] = useState<'signin' | 'signup'>(initialAuthMode);
   const [loading, setLoading] = useState(false);
   const [authMessage, setAuthMessage] = useState<string | null>(null);
+  const closeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const succeededRef = useRef(false);
 
   useEffect(() => {
     if (isOpen) {
       setTab(initialTab);
       setAuthMode(initialAuthMode);
       setAuthMessage(null);
+      succeededRef.current = false;
     }
+    return () => {
+      if (closeTimerRef.current) clearTimeout(closeTimerRef.current);
+    };
   }, [isOpen, initialTab, initialAuthMode]);
+
+  useEffect(() => {
+    if (!isOpen) return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') onClose();
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isOpen, onClose]);
 
   if (!isOpen) return null;
 
@@ -78,12 +93,18 @@ export function AuthBillingModal({
       if (authMode === 'signup') {
         const { error } = await supabase.auth.signUp({ email, password });
         if (error) throw error;
+        succeededRef.current = true;
         setAuthMessage('Account created successfully!');
+        closeTimerRef.current = setTimeout(() => {
+          onSuccess();
+          onClose();
+        }, 1000);
       } else {
         const { error } = await supabase.auth.signInWithPassword({ email, password });
         if (error) throw error;
+        succeededRef.current = true;
         setAuthMessage('Logged in successfully!');
-        setTimeout(() => {
+        closeTimerRef.current = setTimeout(() => {
           onSuccess();
           onClose();
         }, 1000);
@@ -92,13 +113,16 @@ export function AuthBillingModal({
       const message = err instanceof Error ? err.message : 'Auth error';
       setAuthMessage(`Notice: ${message}`);
     } finally {
-      setLoading(false);
+      if (!succeededRef.current) setLoading(false);
     }
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/90 backdrop-blur-md animate-fade-in">
-      <div className="relative w-full max-w-xl bg-black border border-zinc-800 rounded-3xl shadow-2xl overflow-hidden text-zinc-100">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/90 backdrop-blur-md animate-fade-in" onClick={onClose}>
+      <div
+        className="relative w-full max-w-xl bg-black border border-zinc-800 rounded-3xl shadow-2xl overflow-hidden text-zinc-100 max-h-[85vh] flex flex-col"
+        onClick={(e) => e.stopPropagation()}
+      >
         
         {/* Header */}
         <div className="bg-zinc-950 p-6 border-b border-zinc-800 flex items-start justify-between">
@@ -150,7 +174,7 @@ export function AuthBillingModal({
         </div>
 
         {/* Body */}
-        <div className="p-6">
+        <div className="p-6 overflow-y-auto min-h-0">
           {authMessage && (
             <div className="mb-4 p-3 rounded-xl bg-zinc-900 border border-zinc-700 text-white text-xs font-bold">
               <span>{authMessage}</span>

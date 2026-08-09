@@ -44,15 +44,19 @@ export default function Home() {
     const sessionId = new URLSearchParams(window.location.search).get('session_id');
     if (sessionId) {
       fetch(`/api/stripe/verify?session_id=${encodeURIComponent(sessionId)}`)
-        .then((res) => res.json())
-        .then((data: { paid?: boolean; plan?: string | null }) => {
+        .then(async (res) => {
+          const data = await res.json().catch(() => null);
+          if (!res.ok || !data) throw new Error('Stripe verification failed');
+          return data as { paid?: boolean; plan?: string | null };
+        })
+        .then((data) => {
           if (data.paid) {
             if (data.plan === 'pack') {
               addCredits(15);
             } else {
               setProUser(true);
             }
-            window.location.replace(window.location.origin);
+            window.location.replace(window.location.pathname);
           }
         })
         .catch((err) => console.error('Failed to verify Stripe session', err));

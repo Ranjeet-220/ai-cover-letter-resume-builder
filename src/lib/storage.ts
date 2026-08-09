@@ -222,7 +222,7 @@ export async function saveCoverLetter(
 ): Promise<CoverLetter> {
   const now = new Date().toISOString();
   const newLetter: CoverLetter = {
-    id: letter.id || `letter-${Date.now()}-${Math.random().toString(36).substr(2, 4)}`,
+    id: letter.id || `letter-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`,
     title: letter.title || 'Untitled Cover Letter',
     company: letter.company || 'Target Company',
     jobTitle: letter.jobTitle || 'Role Title',
@@ -282,13 +282,10 @@ export async function updateCoverLetterStatus(
 
   const letters = getLocalItem<CoverLetter[]>(STORAGE_KEYS.COVER_LETTERS, DEFAULT_COVER_LETTERS);
   const idx = letters.findIndex((l) => l.id === id);
-  if (idx >= 0) {
-    const next = [...letters];
-    next[idx] = updated;
-    setLocalItem(STORAGE_KEYS.COVER_LETTERS, next);
-  } else {
-    setLocalItem(STORAGE_KEYS.COVER_LETTERS, [updated, ...letters]);
-  }
+  if (idx < 0) return null;
+  const next = [...letters];
+  next[idx] = updated;
+  setLocalItem(STORAGE_KEYS.COVER_LETTERS, next);
 
   if (isSupabaseConfigured() && supabase) {
     try {
@@ -361,7 +358,7 @@ export async function saveResumeProfile(
   const isFirst = currentProfiles.length === 0;
 
   const newProfile: ResumeProfile = {
-    id: profile.id || `prof-${Date.now()}-${Math.random().toString(36).substr(2, 4)}`,
+    id: profile.id || `prof-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`,
     name: profile.name,
     fullName: profile.fullName,
     email: profile.email || '',
@@ -382,6 +379,16 @@ export async function saveResumeProfile(
 
   if (newProfile.isDefault) {
     currentProfiles.forEach((p) => (p.isDefault = false));
+  } else {
+    // Editing the current default profile but unchecking "default" would leave no default.
+    const editedWasDefault = existingIdx >= 0 && currentProfiles[existingIdx].isDefault;
+    if (editedWasDefault) {
+      const otherDefaultIdx = currentProfiles.findIndex((p) => p.id !== newProfile.id && p.isDefault);
+      if (otherDefaultIdx === -1) {
+        const promoteIdx = currentProfiles.findIndex((p) => p.id !== newProfile.id);
+        if (promoteIdx !== -1) currentProfiles[promoteIdx].isDefault = true;
+      }
+    }
   }
 
   if (existingIdx >= 0) {
@@ -455,10 +462,13 @@ export async function getDefaultResumeProfile(): Promise<ResumeProfile | null> {
 
 export async function deleteResumeProfile(id: string): Promise<boolean> {
   const profiles = getLocalItem<ResumeProfile[]>(STORAGE_KEYS.RESUME_PROFILES, DEFAULT_RESUME_PROFILES);
+  const wasDefault = profiles.find((p) => p.id === id)?.isDefault === true;
   const updatedProfiles = profiles.filter((p) => p.id !== id);
-  
+
+  let promotedId: string | null = null;
   if (updatedProfiles.length > 0 && !updatedProfiles.some((p) => p.isDefault)) {
     updatedProfiles[0].isDefault = true;
+    promotedId = updatedProfiles[0].id;
   }
   
   setLocalItem(STORAGE_KEYS.RESUME_PROFILES, updatedProfiles);
@@ -466,6 +476,12 @@ export async function deleteResumeProfile(id: string): Promise<boolean> {
   if (isSupabaseConfigured() && supabase) {
     try {
       await supabase.from('resume_profiles').delete().eq('id', id);
+      if (promotedId) {
+        await supabase.from('resume_profiles').update({ is_default: true }).eq('id', promotedId);
+      } else if (wasDefault) {
+        // No profiles remain in the table; nothing to promote.
+        await supabase.from('resume_profiles').update({ is_default: false }).neq('id', id);
+      }
     } catch (err) {
       console.warn('Supabase delete profile failed', err);
     }

@@ -4,6 +4,20 @@ import { ToastProvider } from "../components/Toast";
 
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL || "https://jobbeam.vercel.app";
 
+const THEME_INIT_SCRIPT = `
+(function () {
+  try {
+    var mode = localStorage.getItem('covercraft_theme_mode');
+    var accent = localStorage.getItem('covercraft_accent_preset');
+    var root = document.documentElement;
+    root.setAttribute('data-theme', mode === 'light' ? 'light' : 'dark');
+    root.setAttribute('data-accent',
+      ['electric-blue', 'violet-aurora', 'emerald-matrix', 'rose-gold'].indexOf(accent) !== -1 ? accent : 'monochrome'
+    );
+  } catch (e) {}
+})();
+`;
+
 export const metadata: Metadata = {
   metadataBase: new URL(APP_URL),
   title: {
@@ -69,7 +83,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="dark">
+    <html lang="en" className="dark" suppressHydrationWarning>
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: THEME_INIT_SCRIPT }} />
+      </head>
       <body className="bg-black text-zinc-100 antialiased selection:bg-white selection:text-black font-sans min-h-screen">
         <ToastProvider>
           {children}

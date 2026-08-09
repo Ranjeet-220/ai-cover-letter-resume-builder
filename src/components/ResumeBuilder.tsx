@@ -13,24 +13,17 @@ import {
   FileText,
   Briefcase,
   User,
-  GraduationCap,
   Wand2,
   Cpu,
   Eye,
   Edit3,
   Palette,
   X,
-  Scissors,
   Type,
   Sliders,
-  ZoomIn,
-  ZoomOut,
-  Maximize2,
-  Minimize2,
-  Printer,
 } from 'lucide-react';
 import { WorkExperienceItem, ResumeCvData } from '../types';
-import { getFreeGenerationsRemaining, canGenerate, incrementUsageCount, isProUser } from '../lib/usage';
+import { canGenerate, incrementUsageCount, isProUser } from '../lib/usage';
 import { AuthBillingModal } from './AuthBillingModal';
 import { ApiSettingsModal } from './ApiSettingsModal';
 import { ResumeTemplateSelector } from './ResumeTemplateSelector';
@@ -982,8 +975,6 @@ function FormattedPrintableResume({
   docFontFamily,
   docFontSize,
   docLineHeight,
-  docPadding = 'normal',
-  showPageBreaks,
 }: {
   data: ResumeCvData;
   templateId: ResumeTemplateId;
@@ -991,22 +982,8 @@ function FormattedPrintableResume({
   docFontFamily: string;
   docFontSize: string;
   docLineHeight: string;
-  docPadding?: string;
-  showPageBreaks: boolean;
 }) {
   const containerRef = useRef<HTMLDivElement>(null);
-  const [pageCount, setPageCount] = useState<number>(1);
-  const [isMultiPage, setIsMultiPage] = useState<boolean>(false);
-
-  useEffect(() => {
-    if (containerRef.current) {
-      const height = containerRef.current.scrollHeight;
-      // Standard A4 height in preview container is approx 1050px
-      const calculatedPages = Math.max(1, Math.ceil(height / 1050));
-      setPageCount(calculatedPages);
-      setIsMultiPage(height > 1020);
-    }
-  }, [data, templateId, docFontSize, docLineHeight]);
 
   const getFontFamilyStyle = () => {
     switch (docFontFamily) {
@@ -1063,8 +1040,6 @@ export function ResumeBuilder() {
   const [loadingAi, setLoadingAi] = useState(false);
   const [enhancingBulletId, setEnhancingBulletId] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
-  const [remainingFree, setRemainingFree] = useState(5);
-  const [isPro, setIsPro] = useState(false);
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [showApiModal, setShowApiModal] = useState(false);
   const [newSkillInput, setNewSkillInput] = useState('');
@@ -1073,8 +1048,6 @@ export function ResumeBuilder() {
   const [docFontFamily, setDocFontFamily] = useState<string>('template');
   const [docFontSize, setDocFontSize] = useState<'compact' | 'normal' | 'large'>('normal');
   const [docLineHeight, setDocLineHeight] = useState<'tight' | 'normal' | 'relaxed'>('normal');
-  const [docPadding, setDocPadding] = useState<'compact' | 'normal' | 'spacious'>('normal');
-  const [showPageBreaks, setShowPageBreaks] = useState<boolean>(true);
   const [splitRatio, setSplitRatio] = useState<number>(54);
   const [isDragging, setIsDragging] = useState<boolean>(false);
   const [isDesktop, setIsDesktop] = useState<boolean>(false);
@@ -1122,17 +1095,19 @@ export function ResumeBuilder() {
     const parsedSkills = rawSkill
       .split(',')
       .map((s) => s.trim())
-      .filter((s) => s.length > 0 && !resumeData.skills.includes(s));
+      .filter((s) => s.length > 0);
 
     if (parsedSkills.length === 0) {
       setNewSkillInput('');
       return;
     }
 
-    setResumeData((prev) => ({
-      ...prev,
-      skills: [...prev.skills, ...parsedSkills],
-    }));
+    setResumeData((prev) => {
+      const existing = new Set(prev.skills.map((s) => s.toLowerCase()));
+      const uniqueNew = parsedSkills.filter((s) => !existing.has(s.toLowerCase()));
+      if (uniqueNew.length === 0) return prev;
+      return { ...prev, skills: [...prev.skills, ...uniqueNew] };
+    });
 
     setNewSkillInput('');
     showToast(
@@ -1142,29 +1117,46 @@ export function ResumeBuilder() {
   };
 
   const handleRemoveSkill = (indexToRemove: number) => {
-    const removedSkill = resumeData.skills[indexToRemove];
-    setResumeData((prev) => ({
-      ...prev,
-      skills: prev.skills.filter((_, idx) => idx !== indexToRemove),
-    }));
-    showToast('Skill Removed', `Removed ${removedSkill}.`);
+    setResumeData((prev) => {
+      const removedSkill = prev.skills[indexToRemove];
+      if (removedSkill !== undefined) {
+        showToast('Skill Removed', `Removed ${removedSkill}.`);
+      }
+      return {
+        ...prev,
+        skills: prev.skills.filter((_, idx) => idx !== indexToRemove),
+      };
+    });
   };
 
   const paperRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    setRemainingFree(getFreeGenerationsRemaining());
-    setIsPro(isProUser());
-    if (typeof window !== 'undefined') {
-      const savedModel = localStorage.getItem('covercraft_selected_model') || 'gemini-3.1-flash-lite';
-      setSelectedModel(savedModel);
-      const savedTemplate = (localStorage.getItem('covercraft_selected_template') as ResumeTemplateId) || 'silicon-valley';
-      setSelectedTemplateId(savedTemplate);
-      const savedPhoto = localStorage.getItem('covercraft_resume_photo');
-      if (savedPhoto) {
-        setResumeData((prev) => ({ ...prev, photoUrl: savedPhoto }));
+    try {
+      if (typeof window !== 'undefined') {
+        const savedModel = localStorage.getItem('covercraft_selected_model') || 'gemini-3.1-flash-lite';
+        setSelectedModel(savedModel);
+        const savedTemplate = (localStorage.getItem('covercraft_selected_template') as ResumeTemplateId) || 'silicon-valley';
+        setSelectedTemplateId(savedTemplate);
+        const savedPhoto = localStorage.getItem('covercraft_resume_photo');
+        if (savedPhoto) {
+          setResumeData((prev) => ({ ...prev, photoUrl: savedPhoto }));
+        }
       }
+    } catch (err) {
+      console.warn('Failed to restore resume preferences from localStorage', err);
     }
+    const refreshModel = () => {
+      try {
+        if (typeof window !== 'undefined') {
+          setSelectedModel(localStorage.getItem('covercraft_selected_model') || 'gemini-3.1-flash-lite');
+        }
+      } catch {
+        // ignore
+      }
+    };
+    window.addEventListener('covercraft-settings-change', refreshModel);
+    return () => window.removeEventListener('covercraft-settings-change', refreshModel);
   }, []);
 
   const handlePhotoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -1175,7 +1167,13 @@ export function ResumeBuilder() {
       const base64 = reader.result as string;
       setResumeData((prev) => ({ ...prev, photoUrl: base64 }));
       if (typeof window !== 'undefined') {
-        localStorage.setItem('covercraft_resume_photo', base64);
+        try {
+          localStorage.setItem('covercraft_resume_photo', base64);
+        } catch (err) {
+          console.warn('Could not persist photo to localStorage', err);
+          showToast('Photo Uploaded', 'Shown in preview but could not be saved locally (storage full).', 'info');
+          return;
+        }
       }
       showToast('Photo Uploaded!', 'Saved locally & added to resume header.');
     };
@@ -1199,21 +1197,11 @@ export function ResumeBuilder() {
     showToast(`Applied ${templateObj.name} Template`, templateObj.badge);
   };
 
-  const refreshStatus = () => {
-    setRemainingFree(getFreeGenerationsRemaining());
-    setIsPro(isProUser());
-  };
-
   const handleLoadPreset = (key: string) => {
     if (SAMPLE_RESUME_PRESETS[key]) {
-      setResumeData(SAMPLE_RESUME_PRESETS[key]);
-      showToast('Preset Loaded', `Populated ${SAMPLE_RESUME_PRESETS[key].professionalTitle} sample resume.`);
-    }
-  };
-
-  const handlePrint = () => {
-    if (typeof window !== 'undefined') {
-      window.print();
+      const preset = SAMPLE_RESUME_PRESETS[key];
+      setResumeData((prev) => ({ ...preset, photoUrl: prev.photoUrl }));
+      showToast('Preset Loaded', `Populated ${preset.professionalTitle} sample resume.`);
     }
   };
 
@@ -1240,17 +1228,18 @@ export function ResumeBuilder() {
         }),
       });
 
-      const data = await res.json();
+      const data = await res.json().catch(() => null);
       if (!res.ok) {
-        throw new Error(data.error || 'Failed to generate summary');
+        throw new Error((data && data.error) || 'Failed to generate summary');
       }
-      if (data.summary) {
+      if (data && data.summary) {
         setResumeData((prev) => ({ ...prev, summary: data.summary }));
         showToast('Executive Summary Generated!', 'ATS-optimized professional summary updated.');
-        if (!isPro) {
+        if (!isProUser()) {
           incrementUsageCount();
-          refreshStatus();
         }
+      } else {
+        throw new Error('The AI returned no summary.');
       }
     } catch (err) {
       console.error(err);
@@ -1288,27 +1277,32 @@ export function ResumeBuilder() {
         }),
       });
 
-      const data = await res.json();
+      const data = await res.json().catch(() => null);
       if (!res.ok) {
-        throw new Error(data.error || 'Failed to enhance bullet');
+        throw new Error((data && data.error) || 'Failed to enhance bullet');
       }
-      if (data.enhancedBullet) {
+      if (data && data.enhancedBullet) {
         setResumeData((prev) => ({
           ...prev,
           experiences: prev.experiences.map((item) => {
             if (item.id === expId) {
               const newBullets = [...item.bullets];
-              newBullets[bulletIndex] = data.enhancedBullet;
+              if (bulletIndex < newBullets.length) {
+                newBullets[bulletIndex] = data.enhancedBullet;
+              } else {
+                newBullets.push(data.enhancedBullet);
+              }
               return { ...item, bullets: newBullets };
             }
             return item;
           }),
         }));
         showToast('Bullet Enhanced!', 'Transformed using Google XYZ metric formula.');
-        if (!isPro) {
+        if (!isProUser()) {
           incrementUsageCount();
-          refreshStatus();
         }
+      } else {
+        throw new Error('The AI returned no enhanced bullet.');
       }
     } catch (err) {
       console.error(err);
@@ -2122,8 +2116,6 @@ ${resumeData.education}
                     docFontFamily={docFontFamily}
                     docFontSize={docFontSize}
                     docLineHeight={docLineHeight}
-                    docPadding={docPadding}
-                    showPageBreaks={showPageBreaks}
                   />
                 </div>
               </div>
@@ -2159,15 +2151,13 @@ ${resumeData.education}
                 docFontFamily={docFontFamily}
                 docFontSize={docFontSize}
                 docLineHeight={docLineHeight}
-                docPadding={docPadding}
-                showPageBreaks={showPageBreaks}
               />
             </div>
           </div>
         )}
 
         {/* Modals */}
-        <AuthBillingModal isOpen={showAuthModal} onClose={() => setShowAuthModal(false)} onSuccess={refreshStatus} />
+        <AuthBillingModal isOpen={showAuthModal} onClose={() => setShowAuthModal(false)} onSuccess={() => {}} />
         <ApiSettingsModal isOpen={showApiModal} onClose={() => setShowApiModal(false)} onSave={(m) => setSelectedModel(m)} />
         <ResumeTemplateSelector
           isOpen={showTemplateModal}
