@@ -73,13 +73,6 @@ export function TopHeader({
         <div className="p-2 rounded-xl bg-zinc-900 border border-zinc-800 text-white font-bold flex items-center justify-center shadow-sm shrink-0">
           <Sparkles className="w-4 h-4 text-white" />
         </div>
-<<<<<<< HEAD
-        <div>
-          <h2 className="text-xs font-extrabold text-white flex items-center gap-2 tracking-tight">
-            <span className="gradient-text-animated">{getStepTitle()}</span>
-            <span className="hidden sm:inline-flex text-[9px] uppercase font-bold px-2 py-0.5 rounded bg-zinc-900 text-zinc-300 border border-zinc-800">
-              GEMINI 3.1 FLASH LITE
-=======
         <div className="min-w-0">
           <h2 className="text-xs font-extrabold text-white flex items-center gap-2 tracking-tight truncate">
             <span className="gradient-text-animated truncate">{getStepTitle()}</span>
