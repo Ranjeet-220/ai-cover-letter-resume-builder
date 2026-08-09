@@ -31,6 +31,7 @@ export default function Home() {
   const [activeProfile, setActiveProfile] = useState<ResumeProfile | null>(null);
 
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isFeedbackOpen, setIsFeedbackOpen] = useState(false);
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const [authModalTab, setAuthModalTab] = useState<'pricing' | 'auth'>('auth');
@@ -118,7 +119,7 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen flex bg-black dark:bg-black text-zinc-100 dark:text-zinc-100 font-sans selection:bg-white selection:text-black transition-colors duration-300">
+    <div className="min-h-screen flex bg-black dark:bg-black text-zinc-100 dark:text-zinc-100 font-sans selection:bg-white selection:text-black transition-colors duration-300 w-full">
       {/* Step-by-Step Navigation Sidebar */}
       <Sidebar
         activeStep={activeStep}
@@ -129,11 +130,21 @@ export default function Home() {
         onOpenThemeModal={() => setIsThemeModalOpen(true)}
         isCollapsed={isSidebarCollapsed}
         onToggleCollapse={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
+        isMobileOpen={isMobileMenuOpen}
+        onCloseMobile={() => setIsMobileMenuOpen(false)}
       />
 
+      {/* Mobile Drawer Backdrop */}
+      {isMobileMenuOpen && (
+        <div
+          className="fixed inset-0 z-40 bg-black/60 backdrop-blur-sm lg:hidden"
+          onClick={() => setIsMobileMenuOpen(false)}
+        />
+      )}
+
       {/* Main View Area */}
-      <div className="flex-1 flex flex-col min-w-0">
-        
+      <div className="flex-1 flex flex-col min-w-0 w-full max-w-full">
+
         {/* Top-Right Header Bar with User-Friendly Sign In & Register Buttons */}
         <TopHeader
           activeStep={activeStep}
@@ -141,6 +152,7 @@ export default function Home() {
           onOpenRegister={handleOpenRegister}
           onOpenApiModal={() => setIsApiModalOpen(true)}
           onOpenThemeModal={() => setIsThemeModalOpen(true)}
+          onOpenMobileMenu={() => setIsMobileMenuOpen(true)}
         />
 
         <main className="flex-1 flex flex-col">
@@ -199,7 +211,7 @@ export default function Home() {
                 />
               ) : <MVPGenerator />}
               <div className="max-w-7xl mx-auto px-4 pb-8 w-full">
-                <div className="p-4 rounded-2xl bg-zinc-950 border border-zinc-800 flex items-center justify-between text-xs">
+                <div className="p-4 rounded-2xl bg-zinc-950 border border-zinc-800 flex flex-wrap items-center justify-between gap-3 text-xs">
                   <span className="text-zinc-400">Want to use the advanced split-screen studio editor?</span>
                   <button
                     onClick={() => setActiveLetter(null)}

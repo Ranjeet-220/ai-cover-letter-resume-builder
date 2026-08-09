@@ -8,6 +8,7 @@ import {
   Zap,
   Sliders,
   Sparkles,
+  Menu,
 } from 'lucide-react';
 import { getFreeGenerationsRemaining, isProUser } from '../lib/usage';
 import { AppStep } from './Sidebar';
@@ -18,6 +19,7 @@ interface TopHeaderProps {
   onOpenRegister: () => void;
   onOpenApiModal: () => void;
   onOpenThemeModal: () => void;
+  onOpenMobileMenu?: () => void;
 }
 
 export function TopHeader({
@@ -26,6 +28,7 @@ export function TopHeader({
   onOpenRegister,
   onOpenApiModal,
   onOpenThemeModal,
+  onOpenMobileMenu,
 }: TopHeaderProps) {
   const [isPro, setIsPro] = useState(false);
   const [remainingFree, setRemainingFree] = useState(5);
@@ -53,16 +56,34 @@ export function TopHeader({
   };
 
   return (
-    <header className="w-full bg-black/90 dark:bg-black/90 border-b border-zinc-800 sticky top-0 z-30 px-4 py-3 flex items-center justify-between gap-4">
+    <header className="w-full bg-black/90 dark:bg-black/90 border-b border-zinc-800 sticky top-0 z-30 px-3 sm:px-4 py-3 flex items-center justify-between gap-2 sm:gap-4">
       {/* Left: Active View Title */}
-      <div className="flex items-center gap-3">
-        <div className="p-2 rounded-xl bg-zinc-900 border border-zinc-800 text-white font-bold flex items-center justify-center shadow-sm">
+      <div className="flex items-center gap-3 min-w-0 flex-1">
+        {/* Mobile Hamburger Menu Toggle */}
+        {onOpenMobileMenu && (
+          <button
+            onClick={onOpenMobileMenu}
+            className="lg:hidden p-2 rounded-xl bg-zinc-900 border border-zinc-800 text-zinc-300 hover:text-white transition cursor-pointer shrink-0"
+            aria-label="Open navigation menu"
+          >
+            <Menu className="w-4 h-4" />
+          </button>
+        )}
+
+        <div className="p-2 rounded-xl bg-zinc-900 border border-zinc-800 text-white font-bold flex items-center justify-center shadow-sm shrink-0">
           <Sparkles className="w-4 h-4 text-white" />
         </div>
+<<<<<<< HEAD
         <div>
           <h2 className="text-xs font-extrabold text-white flex items-center gap-2 tracking-tight">
             <span className="gradient-text-animated">{getStepTitle()}</span>
             <span className="hidden sm:inline-flex text-[9px] uppercase font-bold px-2 py-0.5 rounded bg-zinc-900 text-zinc-300 border border-zinc-800">
+              GEMINI 3.1 FLASH LITE
+=======
+        <div className="min-w-0">
+          <h2 className="text-xs font-extrabold text-white flex items-center gap-2 tracking-tight truncate">
+            <span className="gradient-text-animated truncate">{getStepTitle()}</span>
+            <span className="hidden sm:inline-flex text-[9px] uppercase font-bold px-2 py-0.5 rounded bg-zinc-900 text-zinc-300 border border-zinc-800 shrink-0">
               GEMINI 3.1 FLASH LITE
             </span>
           </h2>
@@ -73,16 +94,16 @@ export function TopHeader({
       </div>
 
       {/* Right: User-Friendly Account & Navigation Buttons */}
-      <div className="flex items-center gap-2.5 flex-wrap">
+      <div className="flex items-center gap-2 sm:gap-2.5 flex-wrap shrink-0 justify-end">
         
         {/* Theme & Visual Aesthetics Button */}
         <button
           onClick={onOpenThemeModal}
-          className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-zinc-950 border border-zinc-800 text-zinc-300 hover:text-white hover:border-zinc-600 text-xs font-semibold transition cursor-pointer"
+          className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-zinc-950 border border-zinc-800 text-zinc-300 hover:text-white hover:border-zinc-600 text-xs font-semibold transition cursor-pointer"
           title="Personalize Light/Dark Mode & Accent Themes"
         >
           <Sparkles className="w-3.5 h-3.5 text-zinc-400" />
-          <span className="hidden sm:inline">Theme</span>
+          <span className="hidden md:inline">Theme</span>
         </button>
 
         {/* Model Settings Drawer Button */}

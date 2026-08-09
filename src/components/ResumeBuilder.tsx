@@ -1494,14 +1494,14 @@ ${resumeData.education}
       </div>
 
       {/* Mode Switcher Tabs */}
-      <div className="flex border-b border-zinc-800 mb-6 gap-3">
+      <div className="flex flex-wrap border-b border-zinc-800 mb-6 gap-x-6 gap-y-2">
         <button
           onClick={() => setActiveTab('editor')}
           className={`pb-3 text-xs font-bold transition flex items-center gap-2 border-b-2 ${
             activeTab === 'editor' ? 'border-white text-white' : 'border-transparent text-zinc-400 hover:text-white'
           }`}
         >
-          <Edit3 className="w-4 h-4" /> Form & AI Bullet Editor
+          <Edit3 className="w-4 h-4 shrink-0" /> Form & AI Bullet Editor
         </button>
         <button
           onClick={() => setActiveTab('preview')}
@@ -1509,7 +1509,7 @@ ${resumeData.education}
             activeTab === 'preview' ? 'border-white text-white' : 'border-transparent text-zinc-400 hover:text-white'
           }`}
         >
-          <Eye className="w-4 h-4" /> Printable Paper Preview ({activeTemplate.name})
+          <Eye className="w-4 h-4 shrink-0" /> Printable Paper Preview ({activeTemplate.name})
         </button>
       </div>
 
@@ -1738,7 +1738,7 @@ ${resumeData.education}
 
             {/* Executive Summary */}
             <div className="bg-zinc-950 border border-zinc-800 rounded-3xl p-6 shadow-xl space-y-4">
-              <div className="flex items-center justify-between border-b border-zinc-800 pb-3">
+              <div className="flex flex-wrap items-center justify-between gap-3 border-b border-zinc-800 pb-3">
                 <h3 className="text-sm font-bold text-white flex items-center gap-2">
                   <Sparkles className="w-4 h-4 text-zinc-400" />
                   Executive Summary
@@ -1814,7 +1814,7 @@ ${resumeData.education}
 
             {/* Experience List */}
             <div className="bg-zinc-950 border border-zinc-800 rounded-3xl p-6 shadow-xl space-y-5">
-              <div className="flex items-center justify-between border-b border-zinc-800 pb-3">
+              <div className="flex flex-wrap items-center justify-between gap-3 border-b border-zinc-800 pb-3">
                 <h3 className="text-sm font-bold text-white flex items-center gap-2">
                   <Briefcase className="w-4 h-4 text-zinc-400" />
                   Professional Work Experience
@@ -1841,7 +1841,7 @@ ${resumeData.education}
                     </button>
                   </div>
 
-                  <div className="grid grid-cols-2 gap-3">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     <div>
                       <label className="block text-[11px] font-semibold text-zinc-400 mb-1">Company Name</label>
                       <input
@@ -1878,7 +1878,7 @@ ${resumeData.education}
                   <div className="space-y-2 pt-2">
                     <label className="block text-[11px] font-semibold text-zinc-400">Bullet Points (Google XYZ Metric Formula)</label>
                     {exp.bullets.map((b, idx) => (
-                      <div key={idx} className="flex gap-2 items-start">
+                      <div key={idx} className="flex flex-col sm:flex-row gap-2 sm:items-start">
                         <textarea
                           rows={2}
                           value={b}
@@ -1896,25 +1896,27 @@ ${resumeData.education}
                               }),
                             }));
                           }}
-                          className="flex-1 p-2 rounded-xl bg-zinc-900 border border-zinc-800 text-zinc-200 text-xs leading-relaxed resize-none focus:border-white"
+                          className="w-full sm:flex-1 p-2 rounded-xl bg-zinc-900 border border-zinc-800 text-zinc-200 text-xs leading-relaxed resize-none focus:border-white"
                         />
-                        <button
-                          type="button"
-                          onClick={() => handleEnhanceBullet(exp.id, idx)}
-                          disabled={enhancingBulletId === `${exp.id}-${idx}`}
-                          className="px-3 py-2 rounded-xl gradient-btn text-[11px] font-bold transition shrink-0 flex items-center gap-1 cursor-pointer"
-                        >
-                          <Zap className="w-3 h-3 text-white" />
-                          {enhancingBulletId === `${exp.id}-${idx}` ? 'Enhancing...' : '⚡ Metric'}
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => handleRemoveBullet(exp.id, idx)}
-                          className="p-2 rounded-xl bg-zinc-900 hover:bg-zinc-800 text-zinc-400 hover:text-white border border-zinc-800 transition shrink-0 cursor-pointer"
-                          title="Delete bullet point"
-                        >
-                          <Trash2 className="w-4 h-4" />
-                        </button>
+                        <div className="flex items-center gap-2 w-full sm:w-auto">
+                          <button
+                            type="button"
+                            onClick={() => handleEnhanceBullet(exp.id, idx)}
+                            disabled={enhancingBulletId === `${exp.id}-${idx}`}
+                            className="flex-1 sm:flex-none px-3 py-2 rounded-xl gradient-btn text-[11px] font-bold transition shrink-0 flex items-center justify-center gap-1 cursor-pointer"
+                          >
+                            <Zap className="w-3 h-3 text-white" />
+                            {enhancingBulletId === `${exp.id}-${idx}` ? 'Enhancing...' : '⚡ Metric'}
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => handleRemoveBullet(exp.id, idx)}
+                            className="p-2 rounded-xl bg-zinc-900 hover:bg-zinc-800 text-zinc-400 hover:text-white border border-zinc-800 transition shrink-0 cursor-pointer"
+                            title="Delete bullet point"
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </button>
+                        </div>
                       </div>
                     ))}
                     <button
@@ -1951,15 +1953,15 @@ ${resumeData.education}
             >
               {/* Document Header Bar */}
               <div className="bg-zinc-950 border border-zinc-800 rounded-3xl p-6 shadow-xl flex flex-col space-y-4">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <Eye className="w-4 h-4 text-zinc-400" />
+                <div className="flex flex-wrap items-center justify-between gap-3">
+                  <div className="flex items-center gap-2 flex-wrap min-w-0">
+                    <Eye className="w-4 h-4 text-zinc-400 shrink-0" />
                     <h3 className="text-sm font-bold text-white">Paper Preview</h3>
                     <span className="text-[10px] font-mono uppercase bg-zinc-900 border border-zinc-800 text-zinc-300 px-2 py-0.5 rounded">
                       {activeTemplate.name}
                     </span>
                   </div>
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-2 flex-wrap">
                     <button
                       type="button"
                       onClick={() => setShowTemplateModal(true)}

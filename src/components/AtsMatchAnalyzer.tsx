@@ -331,7 +331,7 @@ export function AtsMatchAnalyzer({
         
         {/* Filter Navigation Tabs */}
         <div className="flex flex-wrap items-center justify-between gap-3 border-b border-zinc-800 pb-3">
-          <div className="flex items-center gap-1.5 bg-zinc-900 p-1 rounded-2xl border border-zinc-800">
+          <div className="flex flex-wrap items-center gap-1.5 bg-zinc-900 p-1 rounded-2xl border border-zinc-800">
             <button
               onClick={() => setFilterMode('all')}
               className={`px-3 py-1 rounded-xl text-xs font-bold transition ${

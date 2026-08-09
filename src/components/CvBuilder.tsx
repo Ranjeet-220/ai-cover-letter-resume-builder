@@ -325,7 +325,7 @@ export function CvBuilder() {
       </div>
 
       {/* Tabs */}
-      <div className="flex border-b border-zinc-800 mb-6 gap-3">
+      <div className="flex flex-wrap border-b border-zinc-800 mb-6 gap-x-6 gap-y-2">
         <button
           onClick={() => setActiveTab('editor')}
           className={`pb-3 text-xs font-bold transition flex items-center gap-2 border-b-2 ${
@@ -360,7 +360,7 @@ export function CvBuilder() {
               <h3 className="text-sm font-bold text-white flex items-center gap-2 border-b border-zinc-800 pb-3">
                 <User className="w-4 h-4 text-zinc-400" /> Executive Contact & Title
               </h3>
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
                   <label className="block text-[11px] font-semibold text-zinc-400 mb-1">Full Name & Honorifics</label>
                   <input
@@ -381,7 +381,7 @@ export function CvBuilder() {
                 </div>
               </div>
 
-              <div className="grid grid-cols-3 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                 <div>
                   <label className="block text-[11px] font-semibold text-zinc-400 mb-1">Email</label>
                   <input
@@ -414,7 +414,7 @@ export function CvBuilder() {
 
             {/* Biography & Vision */}
             <div className="bg-zinc-950 border border-zinc-800 rounded-3xl p-6 shadow-xl space-y-3">
-              <div className="flex justify-between items-center border-b border-zinc-800 pb-3">
+              <div className="flex flex-wrap items-center justify-between gap-3 border-b border-zinc-800 pb-3">
                 <h3 className="text-sm font-bold text-white flex items-center gap-2">
                   <BookOpen className="w-4 h-4 text-zinc-400" /> Executive Biography & Vision
                 </h3>
@@ -437,7 +437,7 @@ export function CvBuilder() {
 
             {/* Publications & Research */}
             <div className="bg-zinc-950 border border-zinc-800 rounded-3xl p-6 shadow-xl space-y-4">
-              <div className="flex items-center justify-between border-b border-zinc-800 pb-3">
+              <div className="flex flex-wrap items-center justify-between gap-3 border-b border-zinc-800 pb-3">
                 <h3 className="text-sm font-bold text-white flex items-center gap-2">
                   <BookOpen className="w-4 h-4 text-zinc-400" /> Publications & Board Appointments
                 </h3>
@@ -463,7 +463,7 @@ export function CvBuilder() {
                     }}
                     className="w-full px-3 py-1.5 rounded-lg bg-zinc-900 border border-zinc-800 text-white text-xs font-semibold"
                   />
-                  <div className="grid grid-cols-2 gap-2">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                     <input
                       type="text"
                       value={pub.publisher}
@@ -497,7 +497,7 @@ export function CvBuilder() {
 
           {/* Paper Preview */}
           <div className="bg-zinc-950 border border-zinc-800 rounded-3xl p-6 shadow-xl flex flex-col space-y-4">
-            <div className="flex items-center justify-between">
+            <div className="flex flex-wrap items-center justify-between gap-3">
               <h3 className="text-sm font-bold text-white flex items-center gap-2">
                 <Eye className="w-4 h-4 text-zinc-400" /> Executive CV Paper Preview
               </h3>

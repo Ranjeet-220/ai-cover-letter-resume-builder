@@ -28,6 +28,8 @@ interface SidebarProps {
   onOpenThemeModal: () => void;
   isCollapsed: boolean;
   onToggleCollapse: () => void;
+  isMobileOpen?: boolean;
+  onCloseMobile?: () => void;
 }
 
 export function Sidebar({
@@ -39,6 +41,8 @@ export function Sidebar({
   onOpenThemeModal,
   isCollapsed,
   onToggleCollapse,
+  isMobileOpen = false,
+  onCloseMobile,
 }: SidebarProps) {
   const [isPro, setIsPro] = useState(false);
   const [remainingFree, setRemainingFree] = useState(5);
@@ -84,9 +88,9 @@ export function Sidebar({
 
   return (
     <aside
-      className={`fixed lg:sticky top-0 left-0 z-40 h-screen bg-black border-r border-zinc-800/80 flex flex-col justify-between transition-all duration-300 ${
-        isCollapsed ? 'w-20' : 'w-72'
-      }`}
+      className={`fixed lg:sticky top-0 left-0 z-50 lg:z-40 h-screen bg-black border-r border-zinc-800/80 flex flex-col justify-between transition-all duration-300 max-lg:w-72 ${
+        isCollapsed ? 'lg:w-20' : 'lg:w-72'
+      } ${isMobileOpen ? 'translate-x-0' : 'max-lg:-translate-x-full'}`}
     >
       {/* Top Header & Brand */}
       <div>
@@ -132,7 +136,10 @@ export function Sidebar({
                 return (
                   <button
                     key={s.id}
-                    onClick={() => onSelectStep(s.id)}
+                    onClick={() => {
+                      onSelectStep(s.id);
+                      onCloseMobile?.();
+                    }}
                     className={`w-full p-2.5 rounded-2xl transition text-left flex items-center gap-3 group cursor-pointer ${
                       isActive
                         ? 'gradient-active shadow-lg font-semibold'
@@ -175,7 +182,10 @@ export function Sidebar({
                 return (
                   <button
                     key={t.id}
-                    onClick={() => onSelectStep(t.id)}
+                    onClick={() => {
+                      onSelectStep(t.id);
+                      onCloseMobile?.();
+                    }}
                     className={`w-full p-2.5 rounded-2xl transition text-left flex items-center gap-3 cursor-pointer ${
                       isActive
                         ? 'bg-zinc-800 text-white font-semibold border border-zinc-700'

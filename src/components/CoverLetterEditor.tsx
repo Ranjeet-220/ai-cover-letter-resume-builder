@@ -389,7 +389,7 @@ export function CoverLetterEditor({
             {/* Paper Render */}
             <div
               ref={paperRef}
-              className="cover-letter-paper p-10 rounded-xl bg-white text-black shadow-2xl min-h-[640px] space-y-6 text-xs leading-relaxed"
+              className="cover-letter-paper p-5 sm:p-10 rounded-xl bg-white text-black shadow-2xl min-h-[640px] space-y-6 text-xs leading-relaxed"
             >
               <div className="border-b-2 border-black pb-4">
                 <h1 className="text-xl font-extrabold tracking-tight uppercase text-black">

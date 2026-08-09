@@ -158,7 +158,7 @@ export function ResumeProfiles({ onSelectProfile }: ResumeProfilesProps) {
   };
 
   return (
-    <div className="flex flex-col h-full w-full bg-black text-white p-6 space-y-6">
+    <div className="flex flex-col h-full w-full bg-black text-white p-4 sm:p-6 space-y-6">
       {/* Header Bar */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-zinc-800 pb-6">
         <div>

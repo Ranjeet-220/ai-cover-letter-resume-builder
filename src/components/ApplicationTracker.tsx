@@ -152,7 +152,7 @@ export function ApplicationTracker({ onSelectLetter, onCreateNew }: ApplicationT
   }, [letters]);
 
   return (
-    <div className="flex flex-col h-full w-full bg-black text-white p-6 space-y-6">
+    <div className="flex flex-col h-full w-full bg-black text-white p-4 sm:p-6 space-y-6">
       {/* Top Header & Quick Action */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-zinc-800 pb-6">
         <div>
