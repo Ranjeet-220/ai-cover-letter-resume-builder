@@ -34,8 +34,9 @@ export async function POST(req: NextRequest) {
         let model;
         try {
           model = genAI.getGenerativeModel({ model: "gemini-3.1-flash-lite" });
-        } catch {
-          model = genAI.getGenerativeModel({ model: "gemini-3.1-flash-lite" });
+        } catch (modelError: any) {
+          console.warn("Falling back to default Gemini model:", modelError?.message || modelError);
+          model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
         }
 
         let actionPromptInstruction = "";
@@ -164,7 +165,7 @@ function improveFallback(text: string, action: ActionType, jobDescription: strin
     result = result
       .replace(/  +/g, " ")
       .replace(/\s+([.,!?:;])/g, "$1")
-      .replace(/\b(i)\b/g, "I")
+      .replace(/\b(i)\b(?!\.)/g, "I")
       .replace(/\bteh\b/gi, "the")
       .replace(/\breceieve\b/gi, "receive");
   } else if (action === "tailor" && jobDescription) {

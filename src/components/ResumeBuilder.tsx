@@ -1102,31 +1102,34 @@ export function ResumeBuilder() {
       return;
     }
 
-    setResumeData((prev) => {
-      const existing = new Set(prev.skills.map((s) => s.toLowerCase()));
-      const uniqueNew = parsedSkills.filter((s) => !existing.has(s.toLowerCase()));
-      if (uniqueNew.length === 0) return prev;
-      return { ...prev, skills: [...prev.skills, ...uniqueNew] };
-    });
+    const existing = new Set(resumeData.skills.map((s) => s.toLowerCase()));
+    const uniqueNew = parsedSkills.filter((s) => !existing.has(s.toLowerCase()));
+    if (uniqueNew.length === 0) {
+      setNewSkillInput('');
+      return;
+    }
+
+    setResumeData((prev) => ({
+      ...prev,
+      skills: [...prev.skills, ...uniqueNew],
+    }));
 
     setNewSkillInput('');
     showToast(
       'Skills Added!',
-      `Added ${parsedSkills.join(', ')} to technical competencies.`
+      `Added ${uniqueNew.join(', ')} to technical competencies.`
     );
   };
 
   const handleRemoveSkill = (indexToRemove: number) => {
-    setResumeData((prev) => {
-      const removedSkill = prev.skills[indexToRemove];
-      if (removedSkill !== undefined) {
-        showToast('Skill Removed', `Removed ${removedSkill}.`);
-      }
-      return {
-        ...prev,
-        skills: prev.skills.filter((_, idx) => idx !== indexToRemove),
-      };
-    });
+    const removedSkill = resumeData.skills[indexToRemove];
+    setResumeData((prev) => ({
+      ...prev,
+      skills: prev.skills.filter((_, idx) => idx !== indexToRemove),
+    }));
+    if (removedSkill !== undefined) {
+      showToast('Skill Removed', `Removed ${removedSkill}.`);
+    }
   };
 
   const paperRef = useRef<HTMLDivElement>(null);
@@ -1254,6 +1257,7 @@ export function ResumeBuilder() {
       setShowAuthModal(true);
       return;
     }
+    if (enhancingBulletId) return;
     const exp = resumeData.experiences.find((e) => e.id === expId);
     if (!exp) return;
     const rawBullet = exp.bullets[bulletIndex];
@@ -1285,13 +1289,11 @@ export function ResumeBuilder() {
         setResumeData((prev) => ({
           ...prev,
           experiences: prev.experiences.map((item) => {
-            if (item.id === expId) {
+            if (item.id !== expId) return item;
+            if (bulletIndex < item.bullets.length) {
+              if (item.bullets[bulletIndex] !== rawBullet) return item;
               const newBullets = [...item.bullets];
-              if (bulletIndex < newBullets.length) {
-                newBullets[bulletIndex] = data.enhancedBullet;
-              } else {
-                newBullets.push(data.enhancedBullet);
-              }
+              newBullets[bulletIndex] = data.enhancedBullet;
               return { ...item, bullets: newBullets };
             }
             return item;
@@ -1394,7 +1396,7 @@ export function ResumeBuilder() {
     }
   };
 
-  const handleCopyMarkdown = () => {
+  const handleCopyMarkdown = async () => {
     const md = `# ${resumeData.fullName}
 ${resumeData.professionalTitle} | ${resumeData.email} | ${resumeData.phone} | ${resumeData.location}
 
@@ -1416,7 +1418,25 @@ ${exp.bullets.map((b) => `- ${b}`).join('\n')}`
 ${resumeData.education}
 `;
 
-    navigator.clipboard.writeText(md);
+    try {
+      if (navigator.clipboard && window.isSecureContext) {
+        await navigator.clipboard.writeText(md);
+      } else {
+        const textarea = document.createElement('textarea');
+        textarea.value = md;
+        textarea.style.position = 'fixed';
+        textarea.style.opacity = '0';
+        document.body.appendChild(textarea);
+        textarea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textarea);
+      }
+    } catch (err) {
+      console.error('Copy to clipboard failed:', err);
+      showToast('Copy Failed', 'Could not copy to clipboard.', 'error');
+      return;
+    }
+
     setCopied(true);
     showToast('Copied Markdown!', 'Resume content copied in Markdown format.');
     setTimeout(() => setCopied(false), 2000);
@@ -1581,11 +1601,16 @@ ${resumeData.education}
                   <input
                     type="text"
                     placeholder="Alex"
-                    value={resumeData.firstName || (resumeData.fullName ? resumeData.fullName.split(' ')[0] : '')}
+                    value={resumeData.firstName ?? (resumeData.fullName ? resumeData.fullName.split(' ')[0] : '')}
                     onChange={(e) => {
                       const fName = e.target.value;
-                      const lName = resumeData.lastName || (resumeData.fullName ? resumeData.fullName.split(' ').slice(1).join(' ') : '');
-                      setResumeData({ ...resumeData, firstName: fName, fullName: `${fName} ${lName}`.trim() });
+                      const lName = resumeData.lastName ?? (resumeData.fullName ? resumeData.fullName.split(' ').slice(1).join(' ') : '');
+                      setResumeData((prev) => ({
+                        ...prev,
+                        firstName: fName,
+                        lastName: prev.lastName ?? lName,
+                        fullName: `${fName} ${lName}`.trim(),
+                      }));
                     }}
                     className="w-full px-3 py-2 rounded-xl bg-black border border-zinc-800 text-white text-xs focus:outline-none focus:border-white"
                   />
@@ -1595,11 +1620,16 @@ ${resumeData.education}
                   <input
                     type="text"
                     placeholder="Vance"
-                    value={resumeData.lastName || (resumeData.fullName ? resumeData.fullName.split(' ').slice(1).join(' ') : '')}
+                    value={resumeData.lastName ?? (resumeData.fullName ? resumeData.fullName.split(' ').slice(1).join(' ') : '')}
                     onChange={(e) => {
                       const lName = e.target.value;
-                      const fName = resumeData.firstName || (resumeData.fullName ? resumeData.fullName.split(' ')[0] : '');
-                      setResumeData({ ...resumeData, lastName: lName, fullName: `${fName} ${lName}`.trim() });
+                      const fName = resumeData.firstName ?? (resumeData.fullName ? resumeData.fullName.split(' ')[0] : '');
+                      setResumeData((prev) => ({
+                        ...prev,
+                        firstName: prev.firstName ?? fName,
+                        lastName: lName,
+                        fullName: `${fName} ${lName}`.trim(),
+                      }));
                     }}
                     className="w-full px-3 py-2 rounded-xl bg-black border border-zinc-800 text-white text-xs focus:outline-none focus:border-white"
                   />
@@ -1942,7 +1972,7 @@ ${resumeData.education}
 
             {/* Right Column: Live Document Preview */}
             <div
-              style={{ width: isDesktop ? `calc(${100 - splitRatio}% - 1.5rem)` : '100%' }}
+              style={{ width: isDesktop ? `calc(${100 - splitRatio}% - 4rem)` : '100%' }}
               className="flex flex-col shrink-0 space-y-4 min-w-0"
             >
               {/* Document Header Bar */}

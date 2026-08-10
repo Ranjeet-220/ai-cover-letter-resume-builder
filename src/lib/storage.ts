@@ -377,6 +377,7 @@ export async function saveResumeProfile(
   let updatedProfiles: ResumeProfile[];
   const existingIdx = currentProfiles.findIndex((p) => p.id === newProfile.id);
 
+  let promotedId: string | null = null;
   if (newProfile.isDefault) {
     currentProfiles.forEach((p) => (p.isDefault = false));
   } else {
@@ -386,7 +387,10 @@ export async function saveResumeProfile(
       const otherDefaultIdx = currentProfiles.findIndex((p) => p.id !== newProfile.id && p.isDefault);
       if (otherDefaultIdx === -1) {
         const promoteIdx = currentProfiles.findIndex((p) => p.id !== newProfile.id);
-        if (promoteIdx !== -1) currentProfiles[promoteIdx].isDefault = true;
+        if (promoteIdx !== -1) {
+          currentProfiles[promoteIdx].isDefault = true;
+          promotedId = currentProfiles[promoteIdx].id;
+        }
       }
     }
   }
@@ -421,6 +425,9 @@ export async function saveResumeProfile(
         created_at: newProfile.createdAt,
         updated_at: newProfile.updatedAt,
       });
+      if (promotedId) {
+        await supabase.from('resume_profiles').update({ is_default: true }).eq('id', promotedId);
+      }
     } catch (err) {
       console.warn('Supabase profile save failed', err);
     }
