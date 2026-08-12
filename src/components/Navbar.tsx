@@ -67,9 +67,9 @@ export default function Navbar({
         
         {/* Left Section: Logo & App Title */}
         <div className="flex items-center gap-3">
-          <div className="relative flex items-center justify-center w-10 h-10 rounded-xl bg-gradient-to-tr from-blue-600 via-indigo-600 to-purple-600 shadow-md shadow-indigo-500/20 group cursor-pointer">
+          <div className="relative flex items-center justify-center w-10 h-10 rounded-xl gradient-tile shadow-md shadow-[0_4px_12px_-2px_var(--grad-shadow)] group cursor-pointer">
             <Sparkles className="w-5 h-5 text-white transition-transform duration-300 group-hover:rotate-12 group-hover:scale-110" />
-            <div className="absolute inset-0 rounded-xl bg-indigo-500/20 blur-md opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+            <div className="absolute inset-0 rounded-xl bg-white/20 blur-md opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
           </div>
           <div>
             <h1 className="text-xl font-extrabold tracking-tight">
@@ -112,11 +112,11 @@ export default function Navbar({
                     onClick={() => handlePresetSelect(preset.id)}
                     className={cn(
                       "w-full text-left px-3 py-2 text-xs flex items-center justify-between hover:bg-slate-800/60 transition-colors",
-                      preset.id === currentPreset ? "text-indigo-400 font-medium bg-indigo-500/10" : "text-slate-300"
+                      preset.id === currentPreset ? "text-[var(--accent-soft-text)] font-medium bg-[var(--accent-soft-bg)]" : "text-slate-300"
                     )}
                   >
                     <span>{preset.label}</span>
-                    {preset.id === currentPreset && <Check className="w-3.5 h-3.5 text-indigo-400" />}
+                    {preset.id === currentPreset && <Check className="w-3.5 h-3.5 text-[var(--accent-soft-text)]" />}
                   </button>
                 ))}
               </div>
@@ -131,12 +131,12 @@ export default function Navbar({
                 setIsModelDropdownOpen(!isModelDropdownOpen);
                 setIsPresetDropdownOpen(false);
               }}
-              className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-semibold bg-gradient-to-r from-slate-900 to-indigo-950/40 border border-indigo-500/30 hover:border-indigo-500/60 text-slate-200 transition-all shadow-sm group"
+              className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-semibold bg-zinc-900 border border-zinc-700 hover:border-zinc-500 text-slate-200 transition-all shadow-sm group"
               aria-expanded={isModelDropdownOpen}
             >
-              <Cpu className="w-3.5 h-3.5 text-blue-400 group-hover:animate-pulse" />
+              <Cpu className="w-3.5 h-3.5 text-[var(--accent-soft-text)] group-hover:animate-pulse" />
               <span>{activeModelObj.name}</span>
-              <span className="hidden xl:inline-block px-1.5 py-0.5 text-[9px] font-bold rounded-md bg-indigo-500/20 text-indigo-300 border border-indigo-500/30">
+              <span className="hidden xl:inline-block px-1.5 py-0.5 text-[9px] font-bold rounded-md bg-[var(--accent-soft-bg)] text-[var(--accent-soft-text)] border border-slate-700">
                 {activeModelObj.badge}
               </span>
               <ChevronDown className={cn("w-3.5 h-3.5 text-slate-400 transition-transform duration-200", isModelDropdownOpen && "rotate-180")} />
@@ -156,17 +156,17 @@ export default function Navbar({
                       onClick={() => handleModelSelect(model.id)}
                       className={cn(
                         "w-full text-left px-3 py-2.5 text-xs flex items-center justify-between hover:bg-slate-800/60 transition-colors",
-                        isSelected ? "text-indigo-400 bg-indigo-500/10 font-medium" : "text-slate-300"
+                        isSelected ? "text-[var(--accent-soft-text)] bg-[var(--accent-soft-bg)] font-medium" : "text-slate-300"
                       )}
                     >
                       <div className="flex items-center gap-2.5">
-                        <Icon className={cn("w-4 h-4", isSelected ? "text-indigo-400" : "text-slate-400")} />
+                        <Icon className={cn("w-4 h-4", isSelected ? "text-[var(--accent-soft-text)]" : "text-slate-400")} />
                         <div>
                           <div className="font-semibold text-slate-100">{model.name}</div>
                           <div className="text-[10px] text-slate-400">{model.badge}</div>
                         </div>
                       </div>
-                      {isSelected && <Check className="w-4 h-4 text-indigo-400" />}
+                      {isSelected && <Check className="w-4 h-4 text-[var(--accent-soft-text)]" />}
                     </button>
                   );
                 })}

@@ -196,7 +196,7 @@ export function FeedbackModal({
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="bg-gradient-to-r from-indigo-900/50 via-purple-900/40 to-slate-900 p-6 border-b border-slate-800 flex items-start justify-between">
+        <div className="bg-zinc-900/80 p-6 border-b border-slate-800 flex items-start justify-between">
           <div className="flex items-center gap-3">
             <div className="p-3 bg-indigo-600/20 border border-indigo-500/30 rounded-2xl text-indigo-400">
               <MessageSquareHeart className="w-6 h-6 animate-pulse" />
@@ -392,7 +392,7 @@ export function FeedbackModal({
                 <button
                   type="submit"
                   disabled={isSubmitting || rating === 0}
-                  className="flex items-center gap-2 px-5 py-2 rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white font-semibold text-xs transition shadow-lg shadow-indigo-900/40 disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="flex items-center gap-2 px-5 py-2 rounded-xl gradient-btn text-white font-semibold text-xs transition shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {isSubmitting ? (
                     <>

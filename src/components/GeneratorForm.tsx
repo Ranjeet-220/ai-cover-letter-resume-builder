@@ -666,7 +666,7 @@ export default function GeneratorForm({
           <button
             type="submit"
             disabled={isGenerating || isCalculatingScore}
-            className="w-full sm:w-auto flex-1 flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-600 hover:from-purple-500 hover:via-indigo-500 hover:to-blue-500 text-white text-xs font-bold shadow-lg shadow-purple-500/25 transition-all hover:scale-[1.01] active:scale-[0.99] disabled:opacity-50"
+            className="w-full sm:w-auto flex-1 flex items-center justify-center gap-2 px-6 py-3 rounded-xl gradient-btn text-white text-xs font-bold shadow-lg transition-all hover:scale-[1.01] active:scale-[0.99] disabled:opacity-50"
           >
             {isGenerating ? (
               <>
