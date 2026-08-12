@@ -335,6 +335,11 @@ html[data-theme="light"] .glass-card {
   box-shadow: 0 0 20px -5px rgba(161, 161, 170, 0.15);
 }
 
+/* Accent Gradient Bar (progress meters, score bars) */
+.gradient-bar {
+  background: linear-gradient(90deg, var(--grad-a), var(--grad-b), var(--grad-c)) !important;
+}
+
 /* Accent Gradient Tile (logos, icons) */
 .gradient-tile {
   background: linear-gradient(135deg, var(--grad-a), var(--grad-b), var(--grad-c)) !important;

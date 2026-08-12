@@ -116,10 +116,6 @@ export function AtsMatchAnalyzer({
       return {
         label: 'EXCELLENT MATCH',
         subtext: 'High probability of clearing ATS screening filters',
-        color: 'text-emerald-400',
-        stroke: '#34d399',
-        gradientId: 'ats-emerald-grad',
-        glowColor: 'rgba(52, 211, 153, 0.25)',
         bg: 'bg-emerald-500/10 border-emerald-500/30 text-emerald-300',
         badgeBg: 'bg-emerald-950 text-emerald-300 border-emerald-600',
       };
@@ -128,10 +124,6 @@ export function AtsMatchAnalyzer({
       return {
         label: 'STRONG ALIGNMENT',
         subtext: 'Good keyword density, minor optimization recommended',
-        color: 'text-indigo-400',
-        stroke: '#818cf8',
-        gradientId: 'ats-indigo-grad',
-        glowColor: 'rgba(129, 140, 248, 0.25)',
         bg: 'bg-indigo-500/10 border-indigo-500/30 text-indigo-300',
         badgeBg: 'bg-indigo-950 text-indigo-300 border-indigo-600',
       };
@@ -140,10 +132,6 @@ export function AtsMatchAnalyzer({
       return {
         label: 'MODERATE MATCH',
         subtext: 'Weave missing core skills to boost recruiter visibility',
-        color: 'text-amber-400',
-        stroke: '#fbbf24',
-        gradientId: 'ats-amber-grad',
-        glowColor: 'rgba(251, 191, 36, 0.25)',
         bg: 'bg-amber-500/10 border-amber-500/30 text-amber-300',
         badgeBg: 'bg-amber-950 text-amber-300 border-amber-600',
       };
@@ -151,10 +139,6 @@ export function AtsMatchAnalyzer({
     return {
       label: 'NEEDS KEYWORDS',
       subtext: 'Critical skills missing; high risk of automated rejection',
-      color: 'text-rose-400',
-      stroke: '#f43f5e',
-      gradientId: 'ats-rose-grad',
-      glowColor: 'rgba(244, 63, 94, 0.25)',
       bg: 'bg-rose-500/10 border-rose-500/30 text-rose-300',
       badgeBg: 'bg-rose-950 text-rose-300 border-rose-600',
     };
@@ -203,7 +187,7 @@ export function AtsMatchAnalyzer({
       {/* Background ambient lighting */}
       <div 
         className="absolute -top-24 -right-24 w-64 h-64 rounded-full blur-3xl pointer-events-none transition-all duration-700"
-        style={{ background: rating.glowColor }}
+        style={{ background: 'var(--theme-accent-glow)' }}
       />
 
       {/* Top Header & High-Impact Score Gauge */}
@@ -264,7 +248,7 @@ export function AtsMatchAnalyzer({
           {/* Keyword Match Progress Bar */}
           <div className="w-full bg-zinc-900 rounded-full h-2 overflow-hidden border border-zinc-800/80 mt-2">
             <div 
-              className="bg-gradient-to-r from-emerald-500 via-teal-400 to-indigo-500 h-full transition-all duration-700 rounded-full"
+              className="gradient-bar h-full transition-all duration-700 rounded-full"
               style={{ width: `${matchPercentage}%` }}
             />
           </div>
@@ -274,21 +258,9 @@ export function AtsMatchAnalyzer({
         <div className="relative flex items-center justify-center shrink-0 p-2">
           <svg className="w-32 h-32 transform -rotate-90 filter drop-shadow-lg">
             <defs>
-              <linearGradient id="ats-emerald-grad" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" stopColor="#34d399" />
-                <stop offset="100%" stopColor="#059669" />
-              </linearGradient>
-              <linearGradient id="ats-indigo-grad" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" stopColor="#818cf8" />
-                <stop offset="100%" stopColor="#4f46e5" />
-              </linearGradient>
-              <linearGradient id="ats-amber-grad" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" stopColor="#fbbf24" />
-                <stop offset="100%" stopColor="#d97706" />
-              </linearGradient>
-              <linearGradient id="ats-rose-grad" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" stopColor="#f43f5e" />
-                <stop offset="100%" stopColor="#be123c" />
+              <linearGradient id="ats-accent-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stopColor="var(--grad-a)" />
+                <stop offset="100%" stopColor="var(--grad-c)" />
               </linearGradient>
             </defs>
 
@@ -306,7 +278,7 @@ export function AtsMatchAnalyzer({
               cx="64"
               cy="64"
               r={radius}
-              stroke={`url(#${rating.gradientId})`}
+              stroke="url(#ats-accent-grad)"
               strokeWidth="9"
               strokeDasharray={circumference}
               strokeDashoffset={strokeDashoffset}
@@ -322,7 +294,7 @@ export function AtsMatchAnalyzer({
             ) : (
               <>
                 <div className="flex items-baseline justify-center">
-                  <span className={`text-3xl font-black tracking-tight ${rating.color}`}>
+                  <span className="text-3xl font-black tracking-tight gradient-text-animated">
                     {score}
                   </span>
                   <span className="text-xs font-bold text-zinc-400 ml-0.5">%</span>
@@ -479,7 +451,7 @@ export function AtsMatchAnalyzer({
                     title={`Add strategic keyword "${keyword}" to boost ATS ranking`}
                     className="px-3 py-1.5 rounded-xl bg-purple-950/60 border border-purple-800/80 hover:border-purple-400 text-purple-200 hover:text-white text-xs font-bold transition-all duration-200 cursor-pointer active:scale-95 flex items-center gap-1.5 shadow-sm"
                   >
-                    <Sparkles className="w-3.5 h-3.5 text-purple-400" />
+<Sparkles className="w-3.5 h-3.5 text-[var(--accent-soft-text)]" />
                     <span>{keyword}</span>
                     <span className="text-[9px] font-extrabold text-purple-300 bg-purple-900/90 px-1.5 py-0.5 rounded border border-purple-700">
                       +Strategic
