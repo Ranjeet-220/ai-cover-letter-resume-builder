@@ -227,7 +227,7 @@ export function AtsMatchAnalyzer({
             </div>
 
             <div className="flex items-center gap-1.5 px-3 py-1 rounded-xl bg-zinc-900/90 border border-zinc-800">
-              <Sparkles className="w-3.5 h-3.5 text-purple-400" />
+              <Sparkles className="w-3.5 h-3.5 text-[var(--accent-soft-text)]" />
               <span className="text-zinc-400">Recommended:</span>
               <strong className="text-white font-bold">{recommendedKeywords.length}</strong>
             </div>
@@ -326,7 +326,7 @@ export function AtsMatchAnalyzer({
             <button
               onClick={() => setFilterMode('missing')}
               className={`px-3 py-1 rounded-xl text-xs font-bold transition flex items-center gap-1 ${
-                filterMode === 'missing' ? 'bg-rose-500 text-white shadow-md' : 'text-rose-400 hover:text-rose-300'
+                filterMode === 'missing' ? 'gradient-active shadow-md' : 'text-[var(--accent-soft-text)] hover:text-white'
               }`}
             >
               <Plus className="w-3 h-3" /> Missing ({missingKeywords.length})
@@ -334,7 +334,7 @@ export function AtsMatchAnalyzer({
             <button
               onClick={() => setFilterMode('matched')}
               className={`px-3 py-1 rounded-xl text-xs font-bold transition flex items-center gap-1 ${
-                filterMode === 'matched' ? 'bg-emerald-500 text-white shadow-md' : 'text-emerald-400 hover:text-emerald-300'
+                filterMode === 'matched' ? 'gradient-active shadow-md' : 'text-[var(--accent-soft-text)] hover:text-white'
               }`}
             >
               <Check className="w-3 h-3" /> Matched ({matchedKeywords.length})
@@ -342,7 +342,7 @@ export function AtsMatchAnalyzer({
             <button
               onClick={() => setFilterMode('recommended')}
               className={`px-3 py-1 rounded-xl text-xs font-bold transition flex items-center gap-1 ${
-                filterMode === 'recommended' ? 'bg-purple-600 text-white shadow-md' : 'text-purple-400 hover:text-purple-300'
+                filterMode === 'recommended' ? 'gradient-active shadow-md' : 'text-[var(--accent-soft-text)] hover:text-white'
               }`}
             >
               <Sparkles className="w-3 h-3" /> Recommended ({recommendedKeywords.length})
@@ -367,8 +367,8 @@ export function AtsMatchAnalyzer({
           {/* Missing Keywords Chips (Rose Red theme) */}
           {(filterMode === 'all' || filterMode === 'missing') && (
             <div className="space-y-2">
-              <label className="text-xs font-extrabold uppercase tracking-wider text-rose-400 flex items-center gap-1.5">
-                <Flame className="w-3.5 h-3.5 text-rose-400" />
+              <label className="text-xs font-extrabold uppercase tracking-wider text-[var(--accent-chip-text)] flex items-center gap-1.5">
+                <Flame className="w-3.5 h-3.5 text-[var(--accent-chip-text)]" />
                 Missing Required Keywords ({missingKeywords.length})
               </label>
 
@@ -382,15 +382,15 @@ export function AtsMatchAnalyzer({
                         onClick={() => handleKeywordClick(keyword)}
                         disabled={isCurrentlyWeaving}
                         title={`Click to naturally weave "${keyword}" into document text`}
-                        className="group relative px-3 py-1.5 rounded-xl bg-rose-950/60 border border-rose-800/80 hover:border-rose-400 text-rose-200 hover:text-white text-xs font-bold transition-all duration-200 cursor-pointer active:scale-95 flex items-center gap-1.5 shadow-sm disabled:opacity-60"
+                        className="group relative px-3 py-1.5 rounded-xl bg-[var(--accent-chip-bg)] border border-[var(--accent-chip-border)] hover:border-[var(--accent-chip-text)] text-[var(--accent-chip-text)] hover:text-white text-xs font-bold transition-all duration-200 cursor-pointer active:scale-95 flex items-center gap-1.5 shadow-sm disabled:opacity-60"
                       >
                         {isCurrentlyWeaving ? (
-                          <Loader2 className="w-3.5 h-3.5 animate-spin text-rose-300" />
+                          <Loader2 className="w-3.5 h-3.5 animate-spin text-[var(--accent-chip-text)]" />
                         ) : (
-                          <Plus className="w-3.5 h-3.5 text-rose-400 group-hover:text-white group-hover:rotate-90 transition-transform" />
+                          <Plus className="w-3.5 h-3.5 text-[var(--accent-chip-text)] group-hover:text-white group-hover:rotate-90 transition-transform" />
                         )}
                         <span>{keyword}</span>
-                        <span className="text-[9px] font-extrabold text-white bg-rose-600 px-1.5 py-0.5 rounded transition-opacity ml-1 shadow">
+                        <span className="text-[9px] font-extrabold text-[var(--accent-chip-text)] bg-[var(--accent-chip-bg)] px-1.5 py-0.5 rounded transition-opacity ml-1 shadow border border-[var(--accent-chip-border)]">
                           +Weave
                         </span>
                       </button>
@@ -409,8 +409,8 @@ export function AtsMatchAnalyzer({
           {/* Matched Keywords Chips (Emerald Green theme) */}
           {(filterMode === 'all' || filterMode === 'matched') && (
             <div className="space-y-2">
-              <label className="text-xs font-extrabold uppercase tracking-wider text-emerald-400 flex items-center gap-1.5">
-                <Check className="w-3.5 h-3.5 text-emerald-400" />
+              <label className="text-xs font-extrabold uppercase tracking-wider text-[var(--accent-chip-text)] flex items-center gap-1.5">
+                <Check className="w-3.5 h-3.5 text-[var(--accent-chip-text)]" />
                 Verified Matched Keywords ({matchedKeywords.length})
               </label>
 
@@ -419,11 +419,11 @@ export function AtsMatchAnalyzer({
                   {matchedKeywords.map((keyword) => (
                     <span
                       key={keyword}
-                      className="px-3 py-1.5 rounded-xl bg-emerald-950/60 border border-emerald-800/80 text-emerald-200 text-xs font-bold flex items-center gap-1.5 shadow-sm"
+                      className="px-3 py-1.5 rounded-xl bg-[var(--accent-chip-bg)] border border-[var(--accent-chip-border)] text-[var(--accent-chip-text)] text-xs font-bold flex items-center gap-1.5 shadow-sm"
                     >
-                      <Check className="w-3.5 h-3.5 text-emerald-400 stroke-[2.5]" />
+                      <Check className="w-3.5 h-3.5 text-[var(--accent-chip-text)] stroke-[2.5]" />
                       <span>{keyword}</span>
-                      <span className="text-[9px] font-mono uppercase bg-emerald-900/80 text-emerald-300 px-1 rounded border border-emerald-700/50">
+                      <span className="text-[9px] font-mono uppercase bg-[var(--accent-chip-bg)] text-[var(--accent-chip-text)] px-1 rounded border border-[var(--accent-chip-border)]">
                         MATCHED
                       </span>
                     </span>
@@ -438,8 +438,8 @@ export function AtsMatchAnalyzer({
           {/* Recommended Keywords Chips (Purple theme) */}
           {(filterMode === 'all' || filterMode === 'recommended') && (
             <div className="space-y-2">
-              <label className="text-xs font-extrabold uppercase tracking-wider text-purple-400 flex items-center gap-1.5">
-                <Sparkles className="w-3.5 h-3.5 text-purple-400" />
+<label className="text-xs font-extrabold uppercase tracking-wider text-[var(--accent-chip-text)] flex items-center gap-1.5">
+                <Sparkles className="w-3.5 h-3.5 text-[var(--accent-chip-text)]" />
                 Strategic High-Impact Recommendations ({recommendedKeywords.length})
               </label>
 
@@ -449,11 +449,11 @@ export function AtsMatchAnalyzer({
                     key={keyword}
                     onClick={() => handleKeywordClick(keyword)}
                     title={`Add strategic keyword "${keyword}" to boost ATS ranking`}
-                    className="px-3 py-1.5 rounded-xl bg-purple-950/60 border border-purple-800/80 hover:border-purple-400 text-purple-200 hover:text-white text-xs font-bold transition-all duration-200 cursor-pointer active:scale-95 flex items-center gap-1.5 shadow-sm"
+                    className="px-3 py-1.5 rounded-xl bg-[var(--accent-chip-bg)] border border-[var(--accent-chip-border)] hover:border-[var(--accent-chip-text)] text-[var(--accent-chip-text)] hover:text-white text-xs font-bold transition-all duration-200 cursor-pointer active:scale-95 flex items-center gap-1.5 shadow-sm"
                   >
-<Sparkles className="w-3.5 h-3.5 text-[var(--accent-soft-text)]" />
+                    <Sparkles className="w-3.5 h-3.5 text-[var(--accent-chip-text)]" />
                     <span>{keyword}</span>
-                    <span className="text-[9px] font-extrabold text-purple-300 bg-purple-900/90 px-1.5 py-0.5 rounded border border-purple-700">
+                    <span className="text-[9px] font-extrabold text-[var(--accent-chip-text)] bg-[var(--accent-chip-bg)] px-1.5 py-0.5 rounded border border-[var(--accent-chip-border)]">
                       +Strategic
                     </span>
                   </button>

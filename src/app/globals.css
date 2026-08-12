@@ -28,6 +28,11 @@
   /* Soft accent tints (selection states) */
   --accent-soft-text: #a1a1aa;
   --accent-soft-bg: rgba(255, 255, 255, 0.08);
+
+  /* Accent chip tints (keyword chips) */
+  --accent-chip-text: #d4d4d8;
+  --accent-chip-bg: rgba(255, 255, 255, 0.08);
+  --accent-chip-border: rgba(255, 255, 255, 0.18);
 }
 
 /* Light Mode Core Tokens */
@@ -192,6 +197,9 @@ html[data-accent="monochrome"] {
   --grad-shadow-hover: rgba(255, 255, 255, 0.35);
   --accent-soft-text: #e4e4e7;
   --accent-soft-bg: rgba(255, 255, 255, 0.08);
+  --accent-chip-text: #e4e4e7;
+  --accent-chip-bg: rgba(255, 255, 255, 0.08);
+  --accent-chip-border: rgba(255, 255, 255, 0.2);
 }
 
 html[data-accent="electric-blue"] {
@@ -204,6 +212,9 @@ html[data-accent="electric-blue"] {
   --grad-shadow-hover: rgba(56, 189, 248, 0.6);
   --accent-soft-text: #38bdf8;
   --accent-soft-bg: rgba(14, 165, 233, 0.12);
+  --accent-chip-text: #7dd3fc;
+  --accent-chip-bg: rgba(14, 165, 233, 0.14);
+  --accent-chip-border: rgba(56, 189, 248, 0.4);
 }
 
 html[data-accent="electric-blue"] button.bg-white,
@@ -228,6 +239,9 @@ html[data-accent="violet-aurora"] {
   --grad-shadow-hover: rgba(192, 132, 252, 0.6);
   --accent-soft-text: #c4b5fd;
   --accent-soft-bg: rgba(139, 92, 246, 0.12);
+  --accent-chip-text: #ddd6fe;
+  --accent-chip-bg: rgba(139, 92, 246, 0.14);
+  --accent-chip-border: rgba(192, 132, 252, 0.4);
 }
 
 html[data-accent="violet-aurora"] button.bg-white,
@@ -252,6 +266,9 @@ html[data-accent="emerald-matrix"] {
   --grad-shadow-hover: rgba(52, 211, 153, 0.6);
   --accent-soft-text: #6ee7b7;
   --accent-soft-bg: rgba(16, 185, 129, 0.12);
+  --accent-chip-text: #a7f3d0;
+  --accent-chip-bg: rgba(16, 185, 129, 0.14);
+  --accent-chip-border: rgba(52, 211, 153, 0.4);
 }
 
 html[data-accent="emerald-matrix"] button.bg-white,
@@ -276,6 +293,9 @@ html[data-accent="rose-gold"] {
   --grad-shadow-hover: rgba(251, 113, 133, 0.6);
   --accent-soft-text: #fda4af;
   --accent-soft-bg: rgba(244, 63, 94, 0.12);
+  --accent-chip-text: #fecdd3;
+  --accent-chip-bg: rgba(244, 63, 94, 0.14);
+  --accent-chip-border: rgba(251, 113, 133, 0.4);
 }
 
 html[data-accent="rose-gold"] button.bg-white,
