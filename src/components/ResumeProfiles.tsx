@@ -1,7 +1,7 @@
 'use client';
 /* eslint-disable react-hooks/set-state-in-effect */
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import {
   User,
   Star,
@@ -23,14 +23,18 @@ import {
   setDefaultResumeProfile,
   deleteResumeProfile,
 } from '../lib/storage';
+import { useToast } from './Toast';
+import { ErrorAlert } from './ErrorAlert';
 
 interface ResumeProfilesProps {
   onSelectProfile?: (profile: ResumeProfile) => void;
 }
 
 export function ResumeProfiles({ onSelectProfile }: ResumeProfilesProps) {
+  const { showToast } = useToast();
   const [profiles, setProfiles] = useState<ResumeProfile[]>([]);
   const [loading, setLoading] = useState(true);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [isEditing, setIsEditing] = useState(false);
   const [currentProfile, setCurrentProfile] = useState<Partial<ResumeProfile>>({
     name: '',
@@ -49,21 +53,25 @@ export function ResumeProfiles({ onSelectProfile }: ResumeProfilesProps) {
   const [saving, setSaving] = useState(false);
   const [deletingId, setDeletingId] = useState<string | null>(null);
 
-  const fetchProfiles = async () => {
+  const fetchProfiles = useCallback(async () => {
     setLoading(true);
+    setErrorMessage(null);
     try {
       const data = await getResumeProfiles();
       setProfiles(data);
     } catch (err) {
       console.error('Error fetching resume profiles', err);
+      const msg = 'Failed to load resume profiles from storage.';
+      setErrorMessage(msg);
+      showToast('Profile Error', msg, 'error');
     } finally {
       setLoading(false);
     }
-  };
+  }, [showToast]);
 
   useEffect(() => {
     fetchProfiles();
-  }, []);
+  }, [fetchProfiles]);
 
   const handleSetDefault = async (id: string) => {
     try {
@@ -73,9 +81,11 @@ export function ResumeProfiles({ onSelectProfile }: ResumeProfilesProps) {
           prev.map((p) => ({ ...p, isDefault: p.id === id }))
         );
         if (onSelectProfile) onSelectProfile(updated);
+        showToast('Default Profile Updated', `${updated.name} set as primary profile.`, 'success');
       }
     } catch (err) {
       console.error('Error setting default profile', err);
+      showToast('Update Failed', 'Could not set default profile.', 'error');
     }
   };
 
@@ -142,8 +152,10 @@ export function ResumeProfiles({ onSelectProfile }: ResumeProfilesProps) {
       if (onSelectProfile && (saved.isDefault || (updatedProfiles && updatedProfiles.length === 0))) {
         onSelectProfile(saved);
       }
+      showToast('Profile Saved', `${saved.name} was saved successfully.`, 'success');
     } catch (err) {
       console.error('Error saving profile', err);
+      showToast('Save Failed', 'Could not save the profile to storage.', 'error');
     } finally {
       setSaving(false);
     }
@@ -154,8 +166,10 @@ export function ResumeProfiles({ onSelectProfile }: ResumeProfilesProps) {
       await deleteResumeProfile(id);
       setDeletingId(null);
       await fetchProfiles();
+      showToast('Profile Deleted', 'Profile removed successfully.', 'info');
     } catch (err) {
       console.error('Error deleting profile', err);
+      showToast('Delete Failed', 'Could not delete the profile.', 'error');
     }
   };
 
@@ -181,6 +195,17 @@ export function ResumeProfiles({ onSelectProfile }: ResumeProfilesProps) {
           Add Resume Profile
         </button>
       </div>
+
+      {errorMessage && (
+        <ErrorAlert
+          title="Profile Manager Notice"
+          message={errorMessage}
+          variant="error"
+          onDismiss={() => setErrorMessage(null)}
+          onRetry={fetchProfiles}
+          retryLabel="Retry Loading"
+        />
+      )}
 
       {/* Profiles Cards Grid */}
       {loading ? (

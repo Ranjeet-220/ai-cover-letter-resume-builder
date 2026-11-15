@@ -27,6 +27,7 @@ import { JobUrlImporter, ImportedJobData } from './JobUrlImporter';
 import { AtsMatchAnalyzer } from './AtsMatchAnalyzer';
 import { calculateAtsMatchScore, weaveKeywordIntoText, AtsAnalysisResult } from '../lib/atsUtils';
 import { useToast } from './Toast';
+import { ErrorAlert } from './ErrorAlert';
 
 export function MVPGenerator() {
   const { showToast } = useToast();
@@ -52,6 +53,7 @@ export function MVPGenerator() {
   // ATS Score State
   const [atsResult, setAtsResult] = useState<AtsAnalysisResult | null>(null);
   const [isCalculatingAts, setIsCalculatingAts] = useState(false);
+  const [generationError, setGenerationError] = useState<string | null>(null);
 
   useEffect(() => {
     setRemainingFree(getFreeGenerationsRemaining());
@@ -103,7 +105,9 @@ export function MVPGenerator() {
     e.preventDefault();
 
     if (!resumeText.trim() || !jobDescription.trim()) {
-      alert('Please paste both your Resume/Bio and the Job Description.');
+      const msg = 'Please provide both your Resume/Bio and the Job Description before generating.';
+      setGenerationError(msg);
+      showToast('Missing Inputs', msg, 'error');
       return;
     }
 
@@ -115,6 +119,7 @@ export function MVPGenerator() {
 
     setLoading(true);
     setCopied(false);
+    setGenerationError(null);
 
     try {
       const customGeminiKey = typeof window !== 'undefined' ? localStorage.getItem('covercraft_gemini_api_key') || '' : '';
@@ -158,7 +163,9 @@ export function MVPGenerator() {
       }
     } catch (err: any) {
       console.error(err);
-      showToast('Generation Notice', err?.message || 'Please check inputs and try again.', 'error');
+      const msg = err?.message || 'Failed to generate cover letter. Please check inputs and try again.';
+      setGenerationError(msg);
+      showToast('Generation Notice', msg, 'error');
     } finally {
       setLoading(false);
     }
@@ -390,6 +397,20 @@ export function MVPGenerator() {
                 <option value="Confident">🔥 Confident & Authoritative</option>
               </select>
             </div>
+
+            {generationError && (
+              <ErrorAlert
+                title="Generation Issue"
+                message={generationError}
+                variant="error"
+                onDismiss={() => setGenerationError(null)}
+                onRetry={() => {
+                  const fakeEvent = { preventDefault: () => {} } as React.FormEvent;
+                  handleGenerate(fakeEvent);
+                }}
+                retryLabel="Try Again"
+              />
+            )}
 
             <button
               type="submit"

@@ -1,7 +1,7 @@
 'use client';
 /* eslint-disable react-hooks/set-state-in-effect */
 
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import {
   Briefcase,
   Search,
@@ -25,6 +25,8 @@ import {
   updateCoverLetterStatus,
   deleteCoverLetter,
 } from '../lib/storage';
+import { useToast } from './Toast';
+import { ErrorAlert } from './ErrorAlert';
 
 interface ApplicationTrackerProps {
   onSelectLetter: (letter: CoverLetter) => void;
@@ -75,37 +77,45 @@ const STATUS_CONFIG: Record<
 const ALL_STATUSES: ApplicationStatus[] = ['Draft', 'Applied', 'Interviewing', 'Offer', 'Rejected'];
 
 export function ApplicationTracker({ onSelectLetter, onCreateNew }: ApplicationTrackerProps) {
+  const { showToast } = useToast();
   const [letters, setLetters] = useState<CoverLetter[]>([]);
   const [loading, setLoading] = useState(true);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState<string>('ALL');
   const [viewMode, setViewMode] = useState<'board' | 'list'>('board');
   const [deletingId, setDeletingId] = useState<string | null>(null);
 
-  const fetchLetters = async () => {
+  const fetchLetters = useCallback(async () => {
     setLoading(true);
+    setErrorMessage(null);
     try {
       const data = await getCoverLetters();
       setLetters(data);
     } catch (err) {
       console.error('Error fetching cover letters', err);
+      const msg = 'Failed to load applications from local storage.';
+      setErrorMessage(msg);
+      showToast('Tracker Error', msg, 'error');
     } finally {
       setLoading(false);
     }
-  };
+  }, [showToast]);
 
   useEffect(() => {
     fetchLetters();
-  }, []);
+  }, [fetchLetters]);
 
   const handleStatusChange = async (id: string, newStatus: ApplicationStatus) => {
     try {
       const updated = await updateCoverLetterStatus(id, newStatus);
       if (updated) {
         setLetters((prev) => prev.map((l) => (l.id === id ? updated : l)));
+        showToast('Status Updated', `Application moved to ${newStatus}.`, 'success');
       }
     } catch (err) {
       console.error('Error updating status', err);
+      showToast('Status Update Failed', 'Could not save the new application status.', 'error');
     }
   };
 
@@ -113,8 +123,10 @@ export function ApplicationTracker({ onSelectLetter, onCreateNew }: ApplicationT
     try {
       await deleteCoverLetter(id);
       setLetters((prev) => prev.filter((l) => l.id !== id));
+      showToast('Deleted', 'Application removed from tracker.', 'info');
     } catch (err) {
       console.error('Error deleting letter', err);
+      showToast('Delete Failed', 'Could not delete the selected cover letter.', 'error');
     } finally {
       setDeletingId(null);
     }
@@ -175,6 +187,17 @@ export function ApplicationTracker({ onSelectLetter, onCreateNew }: ApplicationT
           New Cover Letter
         </button>
       </div>
+
+      {errorMessage && (
+        <ErrorAlert
+          title="Application Tracker Notice"
+          message={errorMessage}
+          variant="error"
+          onDismiss={() => setErrorMessage(null)}
+          onRetry={fetchLetters}
+          retryLabel="Retry Loading"
+        />
+      )}
 
       {/* Analytics Summary Cards */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">

@@ -5,6 +5,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { X, Zap, Check, Shield, Mail, CreditCard } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import { getErrorMessage, isRecord } from '../lib/errors';
+import { ErrorAlert } from './ErrorAlert';
 
 interface AuthBillingModalProps {
   isOpen: boolean;
@@ -176,8 +177,13 @@ export function AuthBillingModal({
         {/* Body */}
         <div className="p-6 overflow-y-auto min-h-0">
           {authMessage && (
-            <div className="mb-4 p-3 rounded-xl bg-zinc-900 border border-zinc-700 text-white text-xs font-bold">
-              <span>{authMessage}</span>
+            <div className="mb-4">
+              <ErrorAlert
+                title={authMessage.toLowerCase().includes('success') ? 'Success' : 'Authentication Notice'}
+                message={authMessage.replace(/^Notice:\s*/, '')}
+                variant={authMessage.toLowerCase().includes('success') ? 'success' : 'error'}
+                onDismiss={() => setAuthMessage(null)}
+              />
             </div>
           )}
 

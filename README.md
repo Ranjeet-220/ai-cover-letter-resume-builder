@@ -70,12 +70,16 @@ cp .env.example .env.local
 
 | Variable | Required | Description |
 |---|---|---|
-| `GEMINI_API_KEY` | Yes | Google Gemini API key ([get one here](https://aistudio.google.com/)) |
+| `GEMINI_API_KEY` | No | Google Gemini API key ([get one here](https://aistudio.google.com/)); AI falls back to local templates when empty |
 | `ANTHROPIC_API_KEY` | No | Anthropic Claude API key |
 | `NEXT_PUBLIC_SUPABASE_URL` | No | Supabase project URL |
-| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | No | Supabase anonymous key |
+| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | No | Supabase anonymous/publishable key |
+| `STRIPE_SECRET_KEY` | No | Stripe secret key (Pro checkout) |
+| `STRIPE_UNLIMITED_PRICE_ID` | No | Stripe price ID for the unlimited plan |
+| `STRIPE_CREDITS_PRICE_ID` | No | Stripe price ID for the credit pack |
+| `NEXT_PUBLIC_APP_URL` | No | Public app origin used for metadata and Stripe redirects |
 
-> **Note:** The Stripe and Supabase features are optional. Everything except `GEMINI_API_KEY` can be left empty for a fully working local demo.
+> **Note:** The Stripe and Supabase integrations are optional. AI routes fall back to local templates when `GEMINI_API_KEY` is missing, so the app can run locally without any keys.
 
 ### Run the development server
 

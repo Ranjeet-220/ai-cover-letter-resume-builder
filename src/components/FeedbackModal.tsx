@@ -12,6 +12,7 @@ import {
   Loader2,
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
+import { ErrorAlert } from './ErrorAlert';
 
 export type FeedbackCategory =
   | 'General Feedback'
@@ -255,9 +256,12 @@ export function FeedbackModal({
             /* Form State */
             <form onSubmit={handleSubmit} className="space-y-5">
               {errorMessage && (
-                <div className="p-3 rounded-xl bg-rose-950/80 border border-rose-800 text-rose-200 text-xs flex items-center gap-2">
-                  <span>⚠️ {errorMessage}</span>
-                </div>
+                <ErrorAlert
+                  title="Feedback Notice"
+                  message={errorMessage}
+                  variant="error"
+                  onDismiss={() => setErrorMessage(null)}
+                />
               )}
 
               {/* Star Rating Selector */}

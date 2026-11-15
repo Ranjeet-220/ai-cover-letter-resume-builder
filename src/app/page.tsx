@@ -13,6 +13,7 @@ import { FeedbackModal } from '../components/FeedbackModal';
 import { AuthBillingModal } from '../components/AuthBillingModal';
 import { ApiSettingsModal } from '../components/ApiSettingsModal';
 import { ThemeSelectorModal } from '../components/ThemeSelectorModal';
+import { ErrorBoundary } from '../components/ErrorBoundary';
 import {
   CoverLetter,
   ResumeProfile,
@@ -160,93 +161,95 @@ export default function Home() {
         />
 
         <main className="flex-1 flex flex-col">
-          {/* Step 1: Resume Builder */}
-          {activeStep === 'resume' && <ResumeBuilder />}
+          <ErrorBoundary key={activeStep} fallbackTitle={`CoverCraft Studio Error (${activeStep})`}>
+            {/* Step 1: Resume Builder */}
+            {activeStep === 'resume' && <ResumeBuilder />}
 
-          {/* Step 2: Cover Letter Generator */}
-          {activeStep === 'cover-letter' && (
-            <div className="flex-1 flex flex-col">
-              {activeLetter ? (
-                <CoverLetterEditor
-                  initialLetter={{
-                    id: activeLetter.id,
-                    title: activeLetter.title,
-                    targetCompany: activeLetter.company,
-                    jobTitle: activeLetter.jobTitle,
-                    jobDescription: activeLetter.jobDescription || '',
-                    tone: 'professional',
-                    length: 'standard',
-                    content: activeLetter.content,
-                    matchScore: activeLetter.matchScore,
-                    missingKeywords: [],
-                    status: activeLetter.status.toLowerCase() as 'draft' | 'applied' | 'interviewing' | 'offer' | 'rejected',
-                    createdAt: activeLetter.createdAt,
-                    updatedAt: activeLetter.updatedAt,
-                  }}
-                  activeProfile={activeProfile ? {
-                    id: activeProfile.id,
-                    name: activeProfile.name,
-                    fullName: activeProfile.fullName,
-                    email: activeProfile.email,
-                    phone: activeProfile.phone,
-                    location: activeProfile.location,
-                    summary: activeProfile.summary,
-                    skills: activeProfile.skills,
-                    experience: activeProfile.experience,
-                    education: '',
-                    isDefault: activeProfile.isDefault,
-                  } : null}
-                  onSave={(saved) =>
-                    setActiveLetter({
-                      ...activeLetter,
-                      id: saved.id,
-                      title: saved.title,
-                      company: saved.targetCompany,
-                      jobTitle: saved.jobTitle,
-                      jobDescription: saved.jobDescription,
-                      content: saved.content,
-                      status: saved.status
-                        ? ((saved.status.charAt(0).toUpperCase() + saved.status.slice(1)) as CoverLetter['status'])
-                        : activeLetter.status,
-                      matchScore: saved.matchScore,
-                      updatedAt: saved.updatedAt,
-                    })
-                  }
-                />
-              ) : <MVPGenerator />}
-              <div className="max-w-7xl mx-auto px-4 pb-8 w-full">
-                <div className="p-4 rounded-2xl bg-zinc-950 border border-zinc-800 flex flex-wrap items-center justify-between gap-3 text-xs">
-                  <span className="text-zinc-400">Want to use the advanced split-screen studio editor?</span>
-                  <button
-                    onClick={() => setActiveLetter(null)}
-                    className="text-white hover:underline font-bold"
-                  >
-                    Open Studio Editor →
-                  </button>
+            {/* Step 2: Cover Letter Generator */}
+            {activeStep === 'cover-letter' && (
+              <div className="flex-1 flex flex-col">
+                {activeLetter ? (
+                  <CoverLetterEditor
+                    initialLetter={{
+                      id: activeLetter.id,
+                      title: activeLetter.title,
+                      targetCompany: activeLetter.company,
+                      jobTitle: activeLetter.jobTitle,
+                      jobDescription: activeLetter.jobDescription || '',
+                      tone: 'professional',
+                      length: 'standard',
+                      content: activeLetter.content,
+                      matchScore: activeLetter.matchScore,
+                      missingKeywords: [],
+                      status: activeLetter.status.toLowerCase() as 'draft' | 'applied' | 'interviewing' | 'offer' | 'rejected',
+                      createdAt: activeLetter.createdAt,
+                      updatedAt: activeLetter.updatedAt,
+                    }}
+                    activeProfile={activeProfile ? {
+                      id: activeProfile.id,
+                      name: activeProfile.name,
+                      fullName: activeProfile.fullName,
+                      email: activeProfile.email,
+                      phone: activeProfile.phone,
+                      location: activeProfile.location,
+                      summary: activeProfile.summary,
+                      skills: activeProfile.skills,
+                      experience: activeProfile.experience,
+                      education: '',
+                      isDefault: activeProfile.isDefault,
+                    } : null}
+                    onSave={(saved) =>
+                      setActiveLetter({
+                        ...activeLetter,
+                        id: saved.id,
+                        title: saved.title,
+                        company: saved.targetCompany,
+                        jobTitle: saved.jobTitle,
+                        jobDescription: saved.jobDescription,
+                        content: saved.content,
+                        status: saved.status
+                          ? ((saved.status.charAt(0).toUpperCase() + saved.status.slice(1)) as CoverLetter['status'])
+                          : activeLetter.status,
+                        matchScore: saved.matchScore,
+                        updatedAt: saved.updatedAt,
+                      })
+                    }
+                  />
+                ) : <MVPGenerator />}
+                <div className="max-w-7xl mx-auto px-4 pb-8 w-full">
+                  <div className="p-4 rounded-2xl bg-zinc-950 border border-zinc-800 flex flex-wrap items-center justify-between gap-3 text-xs">
+                    <span className="text-zinc-400">Want to use the advanced split-screen studio editor?</span>
+                    <button
+                      onClick={() => setActiveLetter(null)}
+                      className="text-white hover:underline font-bold cursor-pointer"
+                    >
+                      Open Studio Editor →
+                    </button>
+                  </div>
                 </div>
               </div>
-            </div>
-          )}
+            )}
 
-          {/* Step 3: Executive & Academic CV Builder */}
-          {activeStep === 'cv' && <CvBuilder />}
+            {/* Step 3: Executive & Academic CV Builder */}
+            {activeStep === 'cv' && <CvBuilder />}
 
-          {/* Additional Tool: Application Tracker */}
-          {activeStep === 'tracker' && (
-            <ApplicationTracker
-              onSelectLetter={handleSelectLetterForEdit}
-              onCreateNew={handleCreateNewLetter}
-            />
-          )}
+            {/* Additional Tool: Application Tracker */}
+            {activeStep === 'tracker' && (
+              <ApplicationTracker
+                onSelectLetter={handleSelectLetterForEdit}
+                onCreateNew={handleCreateNewLetter}
+              />
+            )}
 
-          {/* Additional Tool: Resume Profiles */}
-          {activeStep === 'profiles' && (
-            <ResumeProfiles
-              onSelectProfile={(profile) => {
-                setActiveProfile(profile);
-              }}
-            />
-          )}
+            {/* Additional Tool: Resume Profiles */}
+            {activeStep === 'profiles' && (
+              <ResumeProfiles
+                onSelectProfile={(profile) => {
+                  setActiveProfile(profile);
+                }}
+              />
+            )}
+          </ErrorBoundary>
         </main>
       </div>
 

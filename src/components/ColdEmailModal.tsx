@@ -15,6 +15,7 @@ import {
   Sliders,
   UserCheck,
 } from 'lucide-react';
+import { ErrorAlert } from './ErrorAlert';
 
 interface ColdEmailModalProps {
   isOpen: boolean;
@@ -297,9 +298,14 @@ export function ColdEmailModal({
         {/* Content Body */}
         <div className="p-6 overflow-y-auto space-y-4 flex-1">
           {error && (
-            <div className="p-3 bg-zinc-900 border border-zinc-800 rounded-xl text-xs text-white">
-              {error}
-            </div>
+            <ErrorAlert
+              title="Cold Email Notice"
+              message={error}
+              variant="error"
+              onDismiss={() => setError(null)}
+              onRetry={handleConvert}
+              retryLabel="Retry Generation"
+            />
           )}
 
           {loading ? (

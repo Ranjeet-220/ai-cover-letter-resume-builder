@@ -520,6 +520,54 @@ html[data-theme="light"] .gradient-text {
   animation: fadeIn 0.2s ease-out forwards;
 }
 
+/* Accessible Light Mode Overrides for Error, Warning & Success Alerts */
+html[data-theme="light"] .bg-rose-950\/40 {
+  background-color: #fff1f2 !important;
+  color: #9f1239 !important;
+  border-color: #fecdd3 !important;
+}
+html[data-theme="light"] .bg-rose-500\/10 {
+  background-color: #ffe4e6 !important;
+  color: #e11d48 !important;
+  border-color: #fda4af !important;
+}
+html[data-theme="light"] .text-rose-200,
+html[data-theme="light"] .text-rose-300 {
+  color: #881337 !important;
+}
+html[data-theme="light"] .text-rose-400 {
+  color: #e11d48 !important;
+}
+html[data-theme="light"] .bg-amber-950\/40 {
+  background-color: #fffbeb !important;
+  color: #92400e !important;
+  border-color: #fde68a !important;
+}
+html[data-theme="light"] .bg-amber-500\/10 {
+  background-color: #fef3c7 !important;
+  color: #d97706 !important;
+  border-color: #fcd34d !important;
+}
+html[data-theme="light"] .text-amber-200 {
+  color: #78350f !important;
+}
+html[data-theme="light"] .bg-emerald-950\/40 {
+  background-color: #ecfdf5 !important;
+  color: #065f46 !important;
+  border-color: #a7f3d0 !important;
+}
+html[data-theme="light"] .bg-emerald-500\/10 {
+  background-color: #d1fae5 !important;
+  color: #059669 !important;
+  border-color: #6ee7b7 !important;
+}
+html[data-theme="light"] .text-emerald-200 {
+  color: #064e3b !important;
+}
+html[data-theme="light"] .text-emerald-400 {
+  color: #059669 !important;
+}
+
 /* Pristine Print CSS Media Query */
 @media print {
   body {

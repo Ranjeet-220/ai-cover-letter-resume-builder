@@ -6,7 +6,6 @@ import {
   Link as LinkIcon,
   Sparkles,
   Loader2,
-  AlertCircle,
   X,
   Building2,
   Briefcase,
@@ -18,6 +17,7 @@ import {
   Clipboard,
   CheckCircle2,
 } from 'lucide-react';
+import { ErrorAlert } from './ErrorAlert';
 
 export interface ImportedJobData {
   jobTitle: string;
@@ -241,13 +241,12 @@ export function JobUrlImporter({
 
           {/* Error Callout */}
           {error && (
-            <div className="p-4 rounded-2xl bg-zinc-950 border-2 border-white text-white text-xs flex items-start gap-3">
-              <AlertCircle className="w-5 h-5 text-white shrink-0 mt-0.5" />
-              <div>
-                <p className="font-bold text-white uppercase tracking-wider text-[11px]">Import Warning</p>
-                <p className="text-zinc-300 mt-1">{error}</p>
-              </div>
-            </div>
+            <ErrorAlert
+              title="Unable to Import Job Post"
+              message={error}
+              variant="error"
+              onDismiss={() => setError(null)}
+            />
           )}
 
           {/* Import Action Button */}

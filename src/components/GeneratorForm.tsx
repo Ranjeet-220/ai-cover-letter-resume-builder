@@ -17,6 +17,7 @@ import {
   BrainCircuit,
   Loader2,
 } from "lucide-react";
+import { ErrorAlert } from "./ErrorAlert";
 
 export interface GeneratorFormData {
   jobTitle: string;
@@ -396,20 +397,24 @@ export default function GeneratorForm({
 
       {/* Messages */}
       {errorMessage && (
-        <div className="mb-4 p-3 rounded-xl bg-red-950/50 border border-red-500/50 text-red-200 text-xs flex items-center justify-between">
-          <span>⚠️ {errorMessage}</span>
-          <button onClick={() => setErrorMessage("")} className="text-red-400 hover:text-white">
-            <X className="w-4 h-4" />
-          </button>
+        <div className="mb-4">
+          <ErrorAlert
+            title="Form Notice"
+            message={errorMessage}
+            variant="error"
+            onDismiss={() => setErrorMessage("")}
+          />
         </div>
       )}
 
       {successMessage && (
-        <div className="mb-4 p-3 rounded-xl bg-emerald-950/50 border border-emerald-500/50 text-emerald-200 text-xs flex items-center justify-between">
-          <span>✅ {successMessage}</span>
-          <button onClick={() => setSuccessMessage("")} className="text-emerald-400 hover:text-white">
-            <X className="w-4 h-4" />
-          </button>
+        <div className="mb-4">
+          <ErrorAlert
+            title="Success"
+            message={successMessage}
+            variant="success"
+            onDismiss={() => setSuccessMessage("")}
+          />
         </div>
       )}
 
