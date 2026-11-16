@@ -1,28 +1,21 @@
 'use client';
 
 import React, { useEffect } from 'react';
+import { getErrorMessage, isRecord } from '../lib/errors';
 import { AlertCircle, RefreshCw, Home, Trash2 } from 'lucide-react';
 
 export default function ErrorPage({
   error,
-  reset,
-  unstable_retry,
+  retry,
 }: {
-  error: Error & { digest?: string };
-  reset: () => void;
-  unstable_retry?: () => void;
+  error: unknown;
+  retry: () => void;
 }) {
   useEffect(() => {
     console.error('Unhandled route error in CoverCraft Studio:', error);
   }, [error]);
 
-  const handleRetry = () => {
-    if (typeof unstable_retry === 'function') {
-      unstable_retry();
-    } else {
-      reset();
-    }
-  };
+  const message = getErrorMessage(error, 'An unexpected runtime error occurred.');
 
   const handleClearCacheAndReset = () => {
     try {
@@ -70,12 +63,12 @@ export default function ErrorPage({
         <div className="w-full p-4 rounded-2xl bg-black border border-zinc-800/80 text-left mb-6 font-mono text-xs">
           <div className="text-[10px] uppercase font-bold text-zinc-500 tracking-wider mb-1.5 flex items-center justify-between">
             <span>Error Details</span>
-            {error.digest && (
+            {isRecord(error) && typeof error.digest === 'string' && (
               <span className="text-zinc-600 font-normal">Digest: {error.digest.slice(0, 12)}...</span>
             )}
           </div>
           <p className="text-rose-300 break-words text-[11px] leading-relaxed">
-            {error.message || 'An unexpected runtime error occurred.'}
+            {message}
           </p>
         </div>
 
@@ -83,7 +76,7 @@ export default function ErrorPage({
         <div className="flex flex-col sm:flex-row items-center gap-3 w-full">
           <button
             type="button"
-            onClick={handleRetry}
+            onClick={retry}
             className="w-full sm:flex-1 py-3 px-4 rounded-xl bg-white hover:bg-zinc-200 text-black font-extrabold text-xs uppercase tracking-wider transition-all shadow-lg active:scale-[0.98] flex items-center justify-center gap-2 cursor-pointer"
           >
             <RefreshCw className="w-4 h-4" />

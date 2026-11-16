@@ -1,27 +1,20 @@
 'use client';
 
 import React, { useEffect } from 'react';
+import { getErrorMessage } from '../lib/errors';
 
 export default function GlobalError({
   error,
-  reset,
-  unstable_retry,
+  retry,
 }: {
-  error: Error & { digest?: string };
-  reset: () => void;
-  unstable_retry?: () => void;
+  error: unknown;
+  retry: () => void;
 }) {
   useEffect(() => {
     console.error('Global root layout error:', error);
   }, [error]);
 
-  const handleRetry = () => {
-    if (typeof unstable_retry === 'function') {
-      unstable_retry();
-    } else {
-      reset();
-    }
-  };
+  const message = getErrorMessage(error, 'An unexpected runtime error occurred.');
 
   return (
     <html lang="en">
@@ -91,7 +84,7 @@ export default function GlobalError({
             A critical error occurred in the root application layout. You can attempt to reload the application.
           </p>
 
-          {error?.message && (
+          {message && (
             <div
               style={{
                 padding: '12px 14px',
@@ -106,13 +99,13 @@ export default function GlobalError({
                 wordBreak: 'break-word',
               }}
             >
-              {error.message}
+              {message}
             </div>
           )}
 
           <div style={{ display: 'flex', gap: '12px', justifyContent: 'center' }}>
             <button
-              onClick={handleRetry}
+              onClick={retry}
               style={{
                 flex: 1,
                 padding: '12px 20px',
