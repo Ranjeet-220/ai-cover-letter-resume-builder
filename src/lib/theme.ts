@@ -12,7 +12,6 @@ export interface AccentColorConfig {
   name: string;
   badge: string;
   primaryColor: string;
-  gradient: string;
   glow: string;
   bgHex: string;
   borderHex: string;
@@ -25,7 +24,6 @@ export const ACCENT_PRESETS: AccentColorConfig[] = [
     name: 'Obsidian & White',
     badge: 'Classic Minimal',
     primaryColor: '#ffffff',
-    gradient: 'from-zinc-100 to-zinc-400',
     glow: 'rgba(255, 255, 255, 0.2)',
     bgHex: '#18181b',
     borderHex: '#3f3f46',
@@ -36,7 +34,6 @@ export const ACCENT_PRESETS: AccentColorConfig[] = [
     name: 'Electric Cyan & Blue',
     badge: 'Tech & Modern',
     primaryColor: '#0284c7',
-    gradient: 'from-cyan-400 to-blue-600',
     glow: 'rgba(56, 189, 248, 0.25)',
     bgHex: '#0c4a6e',
     borderHex: '#0284c7',
@@ -47,18 +44,16 @@ export const ACCENT_PRESETS: AccentColorConfig[] = [
     name: 'Violet Aurora',
     badge: 'Creative & Deep',
     primaryColor: '#8b5cf6',
-    gradient: 'from-violet-400 to-fuchsia-600',
     glow: 'rgba(192, 132, 252, 0.25)',
     bgHex: '#4c1d95',
     borderHex: '#8b5cf6',
-    description: 'Royal purple and vibrant violet gradients with aurora radiance.',
+    description: 'Solid violet accents on a dark background.',
   },
   {
     id: 'emerald-matrix',
     name: 'Emerald Matrix',
     badge: 'Executive & Growth',
     primaryColor: '#10b981',
-    gradient: 'from-emerald-400 to-teal-600',
     glow: 'rgba(52, 211, 153, 0.25)',
     bgHex: '#064e3b',
     borderHex: '#10b981',
@@ -69,7 +64,6 @@ export const ACCENT_PRESETS: AccentColorConfig[] = [
     name: 'Rose Gold & Amber',
     badge: 'Warm & Elegant',
     primaryColor: '#f43f5e',
-    gradient: 'from-rose-400 to-amber-500',
     glow: 'rgba(251, 113, 133, 0.25)',
     bgHex: '#881337',
     borderHex: '#f43f5e',

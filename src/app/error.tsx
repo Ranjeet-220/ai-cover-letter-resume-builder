@@ -2,7 +2,7 @@
 
 import React, { useEffect } from 'react';
 import { getErrorMessage, isRecord } from '../lib/errors';
-import { AlertCircle, RefreshCw, Home, Trash2 } from 'lucide-react';
+import { AlertCircle, RefreshCw, Home } from 'lucide-react';
 
 export default function ErrorPage({
   error,
@@ -16,29 +16,6 @@ export default function ErrorPage({
   }, [error]);
 
   const message = getErrorMessage(error, 'An unexpected runtime error occurred.');
-
-  const handleClearCacheAndReset = () => {
-    try {
-      if (typeof window !== 'undefined') {
-        const preserveKeys = ['covercraft_gemini_api_key', 'covercraft_anthropic_api_key', 'covercraft_theme_mode', 'covercraft_accent_preset'];
-        const savedSettings: Record<string, string> = {};
-        preserveKeys.forEach((k) => {
-          const val = localStorage.getItem(k);
-          if (val) savedSettings[k] = val;
-        });
-
-        sessionStorage.clear();
-        localStorage.clear();
-
-        Object.entries(savedSettings).forEach(([k, v]) => {
-          localStorage.setItem(k, v);
-        });
-      }
-    } catch (e) {
-      console.warn('Could not clear storage', e);
-    }
-    window.location.href = '/';
-  };
 
   return (
     <div className="min-h-screen bg-black text-zinc-100 flex items-center justify-center p-4 sm:p-6 select-none font-sans">
@@ -100,11 +77,11 @@ export default function ErrorPage({
           <span>Persisting crash after reload?</span>
           <button
             type="button"
-            onClick={handleClearCacheAndReset}
+            onClick={() => window.location.reload()}
             className="text-rose-400 hover:text-rose-300 hover:underline flex items-center gap-1 cursor-pointer font-medium"
           >
-            <Trash2 className="w-3 h-3" />
-            <span>Reset Corrupt Session State</span>
+            <RefreshCw className="w-3 h-3" />
+            <span>Reload Safely</span>
           </button>
         </div>
       </div>

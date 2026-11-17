@@ -40,7 +40,9 @@ Use the [Conventional Commits](https://www.conventionalcommits.org/) style:
 
 - TypeScript strict mode, no `any` unless absolutely necessary.
 - Prefer server-side API routes for anything using API keys — never expose keys to the client.
-- Components go in `src/components/`, libs in `src/lib/`, routes in `src/app/api/`.
+- Feature UI goes in `src/features/<feature>/components/`; reusable UI and navigation go in `src/components/ui/` and `src/components/layout/`.
+- Keep route entry points in `src/app/` and server handlers in `src/server/handlers/`. Server handlers must import `server-only`.
+- Shared helpers go in `src/lib/`. See [the architecture guide](docs/architecture.md) for dependency boundaries and data conventions.
 
 ## Reporting Issues
 

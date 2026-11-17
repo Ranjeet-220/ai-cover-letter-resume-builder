@@ -1,5 +1,56 @@
 @import "tailwindcss";
 
+/* Workspace frame */
+.workspace-shell {
+  background: var(--theme-bg);
+}
+
+.workspace-content {
+  background: var(--theme-bg);
+}
+
+.workspace-sidebar {
+  background: color-mix(in srgb, var(--theme-bg) 92%, var(--theme-bg-subtle));
+  border-right: 1px solid var(--theme-border);
+}
+
+.workspace-header {
+  background: color-mix(in srgb, var(--theme-bg) 88%, transparent);
+  border-bottom: 1px solid var(--theme-border);
+  backdrop-filter: blur(18px);
+}
+
+.workspace-icon {
+  color: var(--theme-text);
+  background: var(--accent-soft-bg);
+  border: 1px solid var(--theme-border);
+  box-shadow: 0 0 24px var(--theme-accent-glow);
+}
+
+.workspace-header-action {
+  background: var(--theme-bg-subtle);
+  border: 1px solid var(--theme-border);
+}
+
+.workspace-header-action:hover {
+  border-color: var(--theme-border-hover);
+}
+
+.workspace-nav-active {
+  color: var(--theme-text);
+  background: var(--accent-soft-bg);
+  box-shadow: inset 3px 0 0 var(--theme-accent);
+}
+
+.workspace-nav-item:hover:not(.workspace-nav-active) {
+  background: var(--theme-bg-subtle);
+}
+
+html[data-theme="light"] .workspace-content,
+html[data-theme="light"] .workspace-shell {
+  background-color: var(--theme-bg);
+}
+
 :root {
   --background: #000000;
   --foreground: #fafafa;
@@ -18,12 +69,6 @@
   --theme-accent: #ffffff;
   --theme-accent-glow: rgba(255, 255, 255, 0.2);
 
-  /* Accent Gradient Stops (overridden per data-accent) */
-  --grad-a: #a855f7;
-  --grad-b: #22d3ee;
-  --grad-c: #ec4899;
-  --grad-shadow: rgba(168, 85, 247, 0.5);
-  --grad-shadow-hover: rgba(236, 72, 153, 0.6);
 
   /* Soft accent tints (selection states) */
   --accent-soft-text: #a1a1aa;
@@ -190,11 +235,6 @@ html[data-theme="light"] textarea::placeholder {
 html[data-accent="monochrome"] {
   --theme-accent: #a1a1aa;
   --theme-accent-glow: rgba(255, 255, 255, 0.2);
-  --grad-a: #a1a1aa;
-  --grad-b: #52525b;
-  --grad-c: #27272a;
-  --grad-shadow: rgba(161, 161, 170, 0.5);
-  --grad-shadow-hover: rgba(255, 255, 255, 0.35);
   --accent-soft-text: #e4e4e7;
   --accent-soft-bg: rgba(255, 255, 255, 0.08);
   --accent-chip-text: #e4e4e7;
@@ -205,11 +245,6 @@ html[data-accent="monochrome"] {
 html[data-accent="electric-blue"] {
   --theme-accent: #0284c7;
   --theme-accent-glow: rgba(56, 189, 248, 0.35);
-  --grad-a: #0ea5e9;
-  --grad-b: #0284c7;
-  --grad-c: #075985;
-  --grad-shadow: rgba(2, 132, 199, 0.5);
-  --grad-shadow-hover: rgba(56, 189, 248, 0.6);
   --accent-soft-text: #38bdf8;
   --accent-soft-bg: rgba(14, 165, 233, 0.12);
   --accent-chip-text: #7dd3fc;
@@ -232,11 +267,6 @@ html[data-accent="electric-blue"] .ring-white {
 html[data-accent="violet-aurora"] {
   --theme-accent: #8b5cf6;
   --theme-accent-glow: rgba(192, 132, 252, 0.35);
-  --grad-a: #a78bfa;
-  --grad-b: #7c3aed;
-  --grad-c: #5b21b6;
-  --grad-shadow: rgba(139, 92, 246, 0.5);
-  --grad-shadow-hover: rgba(192, 132, 252, 0.6);
   --accent-soft-text: #c4b5fd;
   --accent-soft-bg: rgba(139, 92, 246, 0.12);
   --accent-chip-text: #ddd6fe;
@@ -259,11 +289,6 @@ html[data-accent="violet-aurora"] .ring-white {
 html[data-accent="emerald-matrix"] {
   --theme-accent: #10b981;
   --theme-accent-glow: rgba(52, 211, 153, 0.35);
-  --grad-a: #10b981;
-  --grad-b: #059669;
-  --grad-c: #065f46;
-  --grad-shadow: rgba(16, 185, 129, 0.5);
-  --grad-shadow-hover: rgba(52, 211, 153, 0.6);
   --accent-soft-text: #6ee7b7;
   --accent-soft-bg: rgba(16, 185, 129, 0.12);
   --accent-chip-text: #a7f3d0;
@@ -286,11 +311,6 @@ html[data-accent="emerald-matrix"] .ring-white {
 html[data-accent="rose-gold"] {
   --theme-accent: #f43f5e;
   --theme-accent-glow: rgba(251, 113, 133, 0.35);
-  --grad-a: #fb7185;
-  --grad-b: #e11d48;
-  --grad-c: #b45309;
-  --grad-shadow: rgba(244, 63, 94, 0.5);
-  --grad-shadow-hover: rgba(251, 113, 133, 0.6);
   --accent-soft-text: #fda4af;
   --accent-soft-bg: rgba(244, 63, 94, 0.12);
   --accent-chip-text: #fecdd3;
@@ -355,14 +375,10 @@ html[data-theme="light"] .glass-card {
   box-shadow: 0 0 20px -5px rgba(161, 161, 170, 0.15);
 }
 
-/* Accent Gradient Bar (progress meters, score bars) */
-.gradient-bar {
-  background: linear-gradient(90deg, var(--grad-a), var(--grad-b), var(--grad-c)) !important;
-}
-
-/* Accent Gradient Tile (logos, icons) */
+/* Flat accent surfaces */
+.gradient-bar,
 .gradient-tile {
-  background: linear-gradient(135deg, var(--grad-a), var(--grad-b), var(--grad-c)) !important;
+  background: var(--theme-accent) !important;
 }
 
 /* Printable Paper Document Styling for Resume & Cover Letter Preview */
@@ -397,67 +413,34 @@ html[data-theme="light"] .cover-letter-paper {
   background: var(--theme-accent);
 }
 
-/* High-Contrast Gradient Text Utility */
-.gradient-text {
-  background: linear-gradient(135deg, #ffffff 0%, #d4d4d8 50%, #a1a1aa 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
-
-html[data-theme="light"] .gradient-text {
-  background: linear-gradient(135deg, #0f172a 0%, #334155 50%, #64748b 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
-
-/* Animated Neon Gradient Text Utility */
-@keyframes gradientFlow {
-  0% {
-    background-position: 0% 50%;
-  }
-  50% {
-    background-position: 100% 50%;
-  }
-  100% {
-    background-position: 0% 50%;
-  }
-}
-
+/* Existing utility names are retained for callers; all surfaces are solid. */
+.gradient-text,
 .gradient-text-animated {
-  background: linear-gradient(90deg, var(--grad-a), var(--grad-b), var(--grad-c));
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-  color: transparent;
+  color: var(--theme-text);
+  -webkit-text-fill-color: currentColor;
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .gradient-text-animated {
-    animation: none;
-    background: linear-gradient(90deg, var(--grad-a), var(--grad-b), var(--grad-c));
-    -webkit-text-fill-color: transparent;
-  }
-}
-
-/* Animated Neon Gradient Buttons & Accents */
-.gradient-btn {
-  background: linear-gradient(90deg, var(--grad-a), var(--grad-b), var(--grad-c), var(--grad-a)) !important;
-  background-size: 300% auto !important;
+.gradient-btn,
+.gradient-active,
+.gradient-badge {
+  background: var(--theme-accent) !important;
   color: #ffffff !important;
-  border-color: transparent !important;
-  animation: gradientFlow 6s ease infinite;
-  box-shadow: 0 8px 24px -8px var(--grad-shadow);
-  transition: box-shadow 0.25s ease, transform 0.15s ease, filter 0.25s ease;
+  border-color: var(--theme-accent) !important;
+  transition: background-color 0.15s ease, transform 0.15s ease;
+}
+
+html[data-accent="monochrome"] .gradient-btn,
+html[data-accent="monochrome"] .gradient-active,
+html[data-accent="monochrome"] .gradient-badge {
+  color: #09090b !important;
 }
 
 .gradient-btn:hover {
-  box-shadow: 0 12px 32px -8px var(--grad-shadow-hover);
-  transform: translateY(-1px);
-  filter: brightness(1.08);
+  background: color-mix(in srgb, var(--theme-accent) 80%, var(--theme-text)) !important;
 }
 
 .gradient-btn:active {
-  transform: translateY(0) scale(0.98);
+  transform: scale(0.98);
 }
 
 .gradient-btn:disabled,
@@ -465,31 +448,6 @@ html[data-theme="light"] .gradient-text {
   opacity: 0.4;
   cursor: not-allowed;
   transform: none;
-  filter: none;
-}
-
-.gradient-active {
-  background: linear-gradient(90deg, var(--grad-a), var(--grad-b), var(--grad-c), var(--grad-a)) !important;
-  background-size: 300% auto !important;
-  color: #ffffff !important;
-  border-color: transparent !important;
-  animation: gradientFlow 8s ease infinite;
-}
-
-.gradient-badge {
-  background: linear-gradient(90deg, var(--grad-a), var(--grad-b), var(--grad-c), var(--grad-a)) !important;
-  background-size: 300% auto !important;
-  color: #ffffff !important;
-  border-color: transparent !important;
-  animation: gradientFlow 8s ease infinite;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .gradient-btn,
-  .gradient-active,
-  .gradient-badge {
-    animation: none;
-  }
 }
 
 /* Keyframe Animations */

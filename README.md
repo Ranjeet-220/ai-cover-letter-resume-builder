@@ -31,7 +31,11 @@ An AI-powered job application toolkit that generates tailored cover letters, bui
 
 ## Screenshots
 
-> Add screenshots here — drop images in `docs/screenshots/` and reference them like this:
+Explore the interface:
+
+![CoverCraft workspace](docs/screenshots/home-top.png)
+
+![Resume builder](docs/screenshots/resume-builder.png)
 
 ```md
 ![Home page](docs/screenshots/home.png)
@@ -99,6 +103,10 @@ Open [http://localhost:3000](http://localhost:3000) with your browser.
 | `npm run lint` | Run ESLint |
 | `npm test` | Run tests |
 
+## Project Structure
+
+The app uses feature folders, shared UI, and server-only API handlers. See [docs/architecture.md](docs/architecture.md) for the folder map, dependency rules, and remaining architectural limitations.
+
 ## API Routes
 
 - `POST /api/generate` — Generate cover letter
@@ -108,7 +116,7 @@ Open [http://localhost:3000](http://localhost:3000) with your browser.
 - `POST /api/job-import` — Import job details from URL
 - `POST /api/resume/generate` — Generate resume
 - `POST /api/resume/enhance-bullet` — Enhance resume bullet points
-- `GET /api/stripe/checkout` — Create Stripe checkout session
+- `POST /api/stripe/checkout` — Create Stripe checkout session
 - `GET /api/stripe/verify` — Verify Stripe payment
 
 ## Security

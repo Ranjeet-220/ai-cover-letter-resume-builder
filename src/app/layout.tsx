@@ -1,6 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
-import { ToastProvider } from "../components/Toast";
+import { ToastProvider } from "@/components/ui/Toast";
 
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL || "https://jobbeam.vercel.app";
 
@@ -24,7 +24,7 @@ export const metadata: Metadata = {
     default: "CoverCraft AI Studio - ATS Resume, Cover Letter & Executive CV Builder",
     template: "%s | CoverCraft AI Studio",
   },
-  description: "Create personalized, ATS-optimized cover letters, Ivy League resumes, and executive CVs in seconds with Gemini 3.1 Flash Lite. Features 1-click job post URL extraction and real-time ATS match scoring.",
+  description: "Write tailored cover letters, build ATS-friendly resumes and CVs, compare your experience with job requirements, and keep applications organized in one workspace.",
   keywords: [
     "AI Cover Letter Generator",
     "Cover Letter Builder",
@@ -45,8 +45,8 @@ export const metadata: Metadata = {
     telephone: false,
   },
   openGraph: {
-    title: "CoverCraft AI Studio - ATS Resume, Cover Letter & Executive CV Builder",
-    description: "Create personalized, ATS-optimized cover letters, Ivy League resumes, and executive CVs in seconds with Gemini 3.1 Flash Lite.",
+    title: "CoverCraft AI Studio — Career Writing Workspace",
+    description: "Create tailored cover letters, build ATS-friendly resumes, and organize your job search.",
     url: APP_URL,
     siteName: "CoverCraft AI Studio",
     locale: "en_US",
@@ -55,7 +55,7 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "CoverCraft AI Studio - Smart Career Writing Suite",
-    description: "Create personalized, ATS-optimized cover letters, Ivy League resumes, and executive CVs in seconds with Gemini 3.1 Flash Lite.",
+    description: "Create tailored cover letters, build ATS-friendly resumes, and organize your job search.",
   },
   robots: {
     index: true,
