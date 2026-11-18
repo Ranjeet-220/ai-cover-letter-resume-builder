@@ -40,8 +40,7 @@ export function addCredits(count: number): void {
 export function getFreeGenerationsRemaining(): number {
   if (isProUser()) return 999;
   const credits = getCreditsRemaining();
-  if (credits > 0) return credits;
-  return Math.max(0, MAX_FREE_GENERATIONS - getFreeGenerationsUsed());
+  return credits + Math.max(0, MAX_FREE_GENERATIONS - getFreeGenerationsUsed());
 }
 
 export function canGenerate(): boolean {

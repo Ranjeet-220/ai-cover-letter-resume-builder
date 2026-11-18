@@ -256,7 +256,7 @@ export function Sidebar({
                   <Zap className="w-3.5 h-3.5 text-amber-400" /> Usage
                 </span>
                 <span className={`font-semibold ${isPro ? 'text-emerald-400' : 'text-zinc-300'}`}>
-                  {isPro ? 'Pro Unlimited' : `${remainingFree} / 5 left`}
+                  {isPro ? 'Pro Unlimited' : `${remainingFree} generations left`}
                 </span>
               </div>
 
@@ -303,7 +303,7 @@ export function Sidebar({
             </button>
             <button
               onClick={onOpenAuthModal}
-              title={isPro ? 'Pro Unlimited' : `${remainingFree} / 5 generations left`}
+              title={isPro ? 'Pro Unlimited' : `${remainingFree} generations left`}
               className="p-2 rounded-xl text-zinc-400 hover:text-white hover:bg-zinc-900 transition cursor-pointer"
             >
               <Zap className={`w-4 h-4 ${isPro ? 'text-amber-400' : 'text-zinc-400'}`} />
