@@ -31,14 +31,13 @@ export function AuthBillingModal({
   const [loading, setLoading] = useState(false);
   const [authMessage, setAuthMessage] = useState<string | null>(null);
   const closeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const succeededRef = useRef(false);
 
   useEffect(() => {
     if (isOpen) {
       setTab(initialTab);
       setAuthMode(initialAuthMode);
       setAuthMessage(null);
-      succeededRef.current = false;
+      setLoading(false);
     }
     return () => {
       if (closeTimerRef.current) clearTimeout(closeTimerRef.current);
@@ -94,7 +93,6 @@ export function AuthBillingModal({
       if (authMode === 'signup') {
         const { error } = await supabase.auth.signUp({ email, password });
         if (error) throw error;
-        succeededRef.current = true;
         setAuthMessage('Account created successfully!');
         closeTimerRef.current = setTimeout(() => {
           onSuccess();
@@ -103,7 +101,6 @@ export function AuthBillingModal({
       } else {
         const { error } = await supabase.auth.signInWithPassword({ email, password });
         if (error) throw error;
-        succeededRef.current = true;
         setAuthMessage('Logged in successfully!');
         closeTimerRef.current = setTimeout(() => {
           onSuccess();
@@ -114,7 +111,7 @@ export function AuthBillingModal({
       const message = err instanceof Error ? err.message : 'Auth error';
       setAuthMessage(`Notice: ${message}`);
     } finally {
-      if (!succeededRef.current) setLoading(false);
+      setLoading(false);
     }
   };
 
