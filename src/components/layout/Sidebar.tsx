@@ -5,7 +5,6 @@ import {
   FileText,
   Sparkles,
   Zap,
-  Briefcase,
   User,
   GraduationCap,
   ChevronRight,
@@ -79,11 +78,6 @@ export function Sidebar({
   ];
 
   const tools = [
-    {
-      id: 'tracker' as AppStep,
-      name: 'Application Tracker',
-      icon: Briefcase,
-    },
     {
       id: 'profiles' as AppStep,
       name: 'Resume Profiles',

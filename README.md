@@ -13,7 +13,7 @@
 
 **Live Demo:** [jobbeam.vercel.app](https://jobbeam.vercel.app)
 
-An AI-powered job application toolkit that generates tailored cover letters, builds ATS-friendly resumes and CVs, analyzes match scores against job descriptions, and tracks your applications — all in one place.
+An AI-powered job application toolkit that generates tailored cover letters, builds ATS-friendly resumes and CVs, and analyzes match scores against job descriptions — all in one place.
 
 </div>
 
@@ -23,7 +23,6 @@ An AI-powered job application toolkit that generates tailored cover letters, bui
 - **Resume Builder** — ATS-friendly resume builder with bullet-point enhancement
 - **CV Builder** — Custom CV templates with export to PDF
 - **ATS Match Analyzer** — Score your resume against a job description
-- **Application Tracker** — Track job applications in one dashboard
 - **Job URL Importer** — Import job details directly from a URL
 - **Cold Email Generator** — Generate outreach emails
 - **Resume Profiles** — Save and switch between multiple resume profiles

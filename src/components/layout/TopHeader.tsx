@@ -9,7 +9,6 @@ import {
   LogIn,
   User,
   FileText,
-  Briefcase,
   GraduationCap,
 } from 'lucide-react';
 import { isProUser } from '@/lib/usage';
@@ -50,8 +49,6 @@ export function TopHeader({
         return { title: 'Cover Letter', icon: Sparkles };
       case 'cv':
         return { title: 'CV Builder', icon: GraduationCap };
-      case 'tracker':
-        return { title: 'Application Tracker', icon: Briefcase };
       case 'profiles':
         return { title: 'Resume Profiles', icon: User };
       default:

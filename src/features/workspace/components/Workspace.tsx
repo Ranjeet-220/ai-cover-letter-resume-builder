@@ -8,7 +8,6 @@ import { MVPGenerator } from '@/features/cover-letter/components/MVPGenerator';
 import { ResumeBuilder } from '@/features/resume/components/ResumeBuilder';
 import { CoverLetterEditor } from '@/features/cover-letter/components/CoverLetterEditor';
 import { CvBuilder } from '@/features/cv/components/CvBuilder';
-import { ApplicationTracker } from '@/features/applications/components/ApplicationTracker';
 import { ResumeProfiles } from '@/features/profiles/components/ResumeProfiles';
 import { FeedbackModal } from '@/features/workspace/components/FeedbackModal';
 import { AuthBillingModal } from '@/features/billing/components/AuthBillingModal';
@@ -102,11 +101,6 @@ export function Workspace() {
   const handleOpenPricing = () => {
     setAuthModalTab('pricing');
     setIsAuthModalOpen(true);
-  };
-
-  const handleSelectLetterForEdit = (letter: CoverLetter) => {
-    setActiveLetter(letter);
-    setActiveStep('cover-letter');
   };
 
   const handleCreateNewLetter = () => {
@@ -287,16 +281,6 @@ export function Workspace() {
                 <CvBuilder />
               </ErrorBoundary>
             </section>
-          )}
-
-          {/* Additional Tool: Application Tracker */}
-          {activeStep === 'tracker' && (
-            <ErrorBoundary fallbackTitle="Application Tracker Error">
-              <ApplicationTracker
-                onSelectLetter={handleSelectLetterForEdit}
-                onCreateNew={handleCreateNewLetter}
-              />
-            </ErrorBoundary>
           )}
 
           {/* Additional Tool: Resume Profiles */}
