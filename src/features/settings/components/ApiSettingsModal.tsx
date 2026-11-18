@@ -15,15 +15,20 @@ export function ApiSettingsModal({ isOpen, onClose, onSave }: ApiSettingsModalPr
   const [geminiKey, setGeminiKey] = useState('');
   const [anthropicKey, setAnthropicKey] = useState('');
   const [savedSuccess, setSavedSuccess] = useState(false);
+  const [storageError, setStorageError] = useState<string | null>(null);
 
   useEffect(() => {
-    if (typeof window !== 'undefined') {
+    if (!isOpen) return;
+    setStorageError(null);
+    try {
       const model = localStorage.getItem('covercraft_selected_model') || 'gemini-3.1-flash-lite';
       const gKey = localStorage.getItem('covercraft_gemini_api_key') || '';
       const aKey = localStorage.getItem('covercraft_anthropic_api_key') || '';
       setSelectedModel(model);
       setGeminiKey(gKey);
       setAnthropicKey(aKey);
+    } catch {
+      setStorageError('Browser storage is unavailable. Your settings cannot be saved in this browser.');
     }
   }, [isOpen]);
 
@@ -40,12 +45,17 @@ export function ApiSettingsModal({ isOpen, onClose, onSave }: ApiSettingsModalPr
 
   const handleSave = (e: React.FormEvent) => {
     e.preventDefault();
-    if (typeof window !== 'undefined') {
+    try {
       localStorage.setItem('covercraft_selected_model', selectedModel);
       localStorage.setItem('covercraft_gemini_api_key', geminiKey.trim());
       localStorage.setItem('covercraft_anthropic_api_key', anthropicKey.trim());
       window.dispatchEvent(new CustomEvent('covercraft-settings-change'));
+    } catch {
+      setSavedSuccess(false);
+      setStorageError('Could not save settings to browser storage. Check your browser privacy settings or available space.');
+      return;
     }
+    setStorageError(null);
     setSavedSuccess(true);
     if (onSave) onSave(selectedModel, geminiKey.trim(), anthropicKey.trim());
     setTimeout(() => {
@@ -91,6 +101,11 @@ export function ApiSettingsModal({ isOpen, onClose, onSave }: ApiSettingsModalPr
               <Check className="w-4 h-4 text-white" />
               <span>Model & API Key preferences saved successfully!</span>
             </div>
+          )}
+          {storageError && (
+            <p role="alert" className="p-3 rounded-xl bg-red-950/50 border border-red-800 text-red-200 text-xs">
+              {storageError}
+            </p>
           )}
 
           {/* Model Selection */}
