@@ -50,16 +50,14 @@ export function MVPGenerator() {
   const [generationError, setGenerationError] = useState<string | null>(null);
 
   useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const savedModel = localStorage.getItem('covercraft_selected_model') || 'gemini-3.1-flash-lite';
-      setSelectedModel(savedModel);
-    }
-
     const refreshModel = () => {
-      if (typeof window !== 'undefined') {
+      try {
         setSelectedModel(localStorage.getItem('covercraft_selected_model') || 'gemini-3.1-flash-lite');
+      } catch {
+        setSelectedModel('gemini-3.1-flash-lite');
       }
     };
+    refreshModel();
     window.addEventListener('covercraft-settings-change', refreshModel);
     return () => {
       window.removeEventListener('covercraft-settings-change', refreshModel);
@@ -72,6 +70,8 @@ export function MVPGenerator() {
       const docToAnalyze = generatedLetter.trim() || resumeText.trim();
       const result = calculateAtsMatchScore(docToAnalyze, jobDescription, jobTitle);
       setAtsResult(result);
+    } else {
+      setAtsResult(null);
     }
   }, [generatedLetter, resumeText, jobDescription, jobTitle]);
 
@@ -96,8 +96,14 @@ export function MVPGenerator() {
     setGenerationError(null);
 
     try {
-      const customGeminiKey = typeof window !== 'undefined' ? localStorage.getItem('covercraft_gemini_api_key') || '' : '';
-      const customAnthropicKey = typeof window !== 'undefined' ? localStorage.getItem('covercraft_anthropic_api_key') || '' : '';
+      let customGeminiKey = '';
+      let customAnthropicKey = '';
+      try {
+        customGeminiKey = localStorage.getItem('covercraft_gemini_api_key') || '';
+        customAnthropicKey = localStorage.getItem('covercraft_anthropic_api_key') || '';
+      } catch {
+        // Browser storage is optional; server credentials or the local fallback may still work.
+      }
 
       const response = await fetch('/api/generate', {
         method: 'POST',
@@ -167,6 +173,7 @@ export function MVPGenerator() {
     setJobDescription(sampleJd);
     setCompanyName(sampleCompany);
     setJobTitle(sampleTitle);
+    setGeneratedLetter('');
 
     const initialAts = calculateAtsMatchScore(sampleResume, sampleJd, sampleTitle);
     setAtsResult(initialAts);
