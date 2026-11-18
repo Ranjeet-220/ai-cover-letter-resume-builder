@@ -1,6 +1,7 @@
 import 'server-only';
 
 import { NextRequest, NextResponse } from 'next/server';
+import { BadRequestError, readObjectBody } from '@/server/validation';
 
 interface CheckoutBody {
   plan?: unknown;
@@ -8,7 +9,7 @@ interface CheckoutBody {
 
 export async function POST(req: NextRequest) {
   try {
-    const { plan }: CheckoutBody = await req.json();
+    const { plan } = await readObjectBody<CheckoutBody>(req, { plan: 'string' });
 
     if (plan !== 'unlimited' && plan !== 'pack') {
       return NextResponse.json({ error: 'Invalid checkout plan.' }, { status: 400 });
@@ -67,6 +68,9 @@ export async function POST(req: NextRequest) {
       { status: 503 }
     );
   } catch (error) {
+    if (error instanceof BadRequestError) {
+      return NextResponse.json({ error: error.message }, { status: 400 });
+    }
     console.error('Stripe checkout error:', error);
     return NextResponse.json(
       { error: 'Failed to initiate Stripe checkout' },

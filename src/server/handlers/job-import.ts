@@ -5,6 +5,7 @@ import { GoogleGenerativeAI } from "@google/generative-ai";
 import { lookup } from "node:dns/promises";
 import { isIP } from "node:net";
 import { getErrorMessage, isRecord } from "@/lib/errors";
+import { BadRequestError, readObjectBody } from '@/server/validation';
 
 interface JobImportRequestBody {
   url?: string;
@@ -25,7 +26,9 @@ const COMMON_SKILLS_LIST = [
 
 export async function POST(req: NextRequest) {
   try {
-    const body: JobImportRequestBody = await req.json();
+    const body = await readObjectBody<JobImportRequestBody>(req, {
+      url: 'string', model: 'string', apiKey: 'string',
+    });
     let rawUrl = body.url?.trim() || "";
 
     if (!rawUrl) {
@@ -185,6 +188,9 @@ Return ONLY a JSON object with the following schema:
     });
 
   } catch (error: unknown) {
+    if (error instanceof BadRequestError) {
+      return NextResponse.json({ success: false, error: error.message }, { status: 400 });
+    }
     console.error("Error in /api/job-import:", error);
     return NextResponse.json(
       {

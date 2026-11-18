@@ -3,6 +3,7 @@ import 'server-only';
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { NextRequest, NextResponse } from "next/server";
 import { GoogleGenerativeAI } from "@google/generative-ai";
+import { BadRequestError, readObjectBody } from '@/server/validation';
 
 interface ColdEmailRequestBody {
   coverLetter?: string;
@@ -31,7 +32,10 @@ interface ColdEmailResponse {
 
 export async function POST(req: NextRequest): Promise<NextResponse<ColdEmailResponse>> {
   try {
-    const body: ColdEmailRequestBody = await req.json();
+    const body = await readObjectBody<ColdEmailRequestBody>(req, {
+      coverLetter: 'string', jobTitle: 'string', targetCompany: 'string',
+      hiringManagerName: 'string', tone: 'string', apiKey: 'string',
+    });
 
     const coverLetter = body.coverLetter?.trim() || "";
     const jobTitle = body.jobTitle?.trim() || "";
@@ -161,6 +165,9 @@ Return ONLY a valid raw JSON object (no markdown backticks, no markdown formatti
         : "Converted using built-in intelligent cold outreach conversion engine.",
     });
   } catch (error: any) {
+    if (error instanceof BadRequestError) {
+      return NextResponse.json({ success: false, error: error.message }, { status: 400 });
+    }
     console.error("Error in /api/cold-email:", error);
     return NextResponse.json(
       {

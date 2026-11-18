@@ -4,6 +4,7 @@ import 'server-only';
 import { NextRequest, NextResponse } from "next/server";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import Anthropic from "@anthropic-ai/sdk";
+import { BadRequestError, readObjectBody } from '@/server/validation';
 
 interface GenerateRequestBody {
   resume?: string;
@@ -67,7 +68,11 @@ Generate custom, non-generic cover letters and career documents strictly grounde
 
 export async function POST(req: NextRequest) {
   try {
-    const body: GenerateRequestBody = await req.json();
+    const body = await readObjectBody<GenerateRequestBody>(req, {
+      resume: 'string', jobTitle: 'string', targetCompany: 'string', jobDescription: 'string',
+      tone: 'string', length: 'string', focusKeywords: 'string-or-string-array',
+      apiKey: 'string', anthropicApiKey: 'string', model: 'string',
+    });
 
     const resume = body.resume?.trim() || "";
     const jobTitle = body.jobTitle?.trim() || "Target Position";
@@ -219,6 +224,9 @@ Generate the tailored cover letter using Gemini 3.1 Flash Lite high precision st
     });
 
   } catch (error: any) {
+    if (error instanceof BadRequestError) {
+      return NextResponse.json({ success: false, error: error.message }, { status: 400 });
+    }
     console.error("Error in /api/generate:", error);
     return NextResponse.json(
       { success: false, error: error.message || "Failed to generate cover letter" },

@@ -3,6 +3,7 @@ import 'server-only';
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { NextRequest, NextResponse } from "next/server";
 import { GoogleGenerativeAI } from "@google/generative-ai";
+import { BadRequestError, readObjectBody } from '@/server/validation';
 
 type ActionType = "shorten" | "confident" | "leadership" | "grammar" | "tailor";
 
@@ -15,10 +16,15 @@ interface ImproveRequestBody {
 
 export async function POST(req: NextRequest) {
   try {
-    const body: ImproveRequestBody = await req.json();
+    const body = await readObjectBody<ImproveRequestBody>(req, {
+      text: 'string', action: 'string', jobDescription: 'string', apiKey: 'string',
+    });
 
     const text = body.text?.trim() || "";
     const action = body.action || "grammar";
+    if (!['shorten', 'confident', 'leadership', 'grammar', 'tailor'].includes(action)) {
+      throw new BadRequestError('Invalid improve action.');
+    }
     const jobDescription = body.jobDescription?.trim() || "";
     const apiKey = body.apiKey?.trim() || process.env.GEMINI_API_KEY || "";
 
@@ -103,6 +109,9 @@ Return ONLY the refined, improved cover letter text. Do not include markdown met
     });
 
   } catch (error: any) {
+    if (error instanceof BadRequestError) {
+      return NextResponse.json({ success: false, error: error.message }, { status: 400 });
+    }
     console.error("Error in /api/improve:", error);
     return NextResponse.json(
       { success: false, error: error.message || "Failed to improve text" },

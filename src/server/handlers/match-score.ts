@@ -4,6 +4,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { calculateAtsMatchScore } from "@/lib/atsUtils";
 import { getErrorMessage, isRecord } from "@/lib/errors";
+import { BadRequestError, readObjectBody } from '@/server/validation';
 
 interface MatchScoreRequestBody {
   resume?: string;
@@ -14,7 +15,9 @@ interface MatchScoreRequestBody {
 
 export async function POST(req: NextRequest) {
   try {
-    const body: MatchScoreRequestBody = await req.json();
+    const body = await readObjectBody<MatchScoreRequestBody>(req, {
+      resume: 'string', jobDescription: 'string', jobTitle: 'string', apiKey: 'string',
+    });
 
     const resume = body.resume?.trim() || "";
     const jobDescription = body.jobDescription?.trim() || "";
@@ -114,6 +117,9 @@ Provide a thorough analysis in JSON format with the following keys:
     });
 
   } catch (error: unknown) {
+    if (error instanceof BadRequestError) {
+      return NextResponse.json({ success: false, error: error.message }, { status: 400 });
+    }
     console.error("Error in /api/match-score:", error);
     return NextResponse.json(
       { success: false, error: getErrorMessage(error, "Failed to calculate match score") },

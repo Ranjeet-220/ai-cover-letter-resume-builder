@@ -4,6 +4,7 @@ import 'server-only';
 import { NextRequest, NextResponse } from "next/server";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import Anthropic from "@anthropic-ai/sdk";
+import { BadRequestError, readObjectBody } from '@/server/validation';
 
 interface ResumeGenerateRequestBody {
   targetRole?: string;
@@ -18,7 +19,10 @@ interface ResumeGenerateRequestBody {
 
 export async function POST(req: NextRequest) {
   try {
-    const body: ResumeGenerateRequestBody = await req.json();
+    const body = await readObjectBody<ResumeGenerateRequestBody>(req, {
+      targetRole: 'string', pastExperience: 'string', keySkills: 'string-or-string-array',
+      education: 'string', tone: 'string', model: 'string', apiKey: 'string', anthropicApiKey: 'string',
+    });
 
     const targetRole = body.targetRole?.trim() || "Professional Role";
     const pastExperience = body.pastExperience?.trim() || "";
@@ -129,6 +133,9 @@ DIRECTIVES:
     });
 
   } catch (error: any) {
+    if (error instanceof BadRequestError) {
+      return NextResponse.json({ success: false, error: error.message }, { status: 400 });
+    }
     console.error("Error in /api/resume/generate:", error);
     return NextResponse.json(
       { success: false, error: error.message || "Failed to generate resume summary" },

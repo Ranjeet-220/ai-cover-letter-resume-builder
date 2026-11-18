@@ -4,6 +4,7 @@ import 'server-only';
 import { NextRequest, NextResponse } from "next/server";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import Anthropic from "@anthropic-ai/sdk";
+import { BadRequestError, readObjectBody } from '@/server/validation';
 
 interface EnhanceBulletRequestBody {
   bullet?: string;
@@ -15,7 +16,9 @@ interface EnhanceBulletRequestBody {
 
 export async function POST(req: NextRequest) {
   try {
-    const body: EnhanceBulletRequestBody = await req.json();
+    const body = await readObjectBody<EnhanceBulletRequestBody>(req, {
+      bullet: 'string', targetRole: 'string', model: 'string', apiKey: 'string', anthropicApiKey: 'string',
+    });
 
     const rawBullet = body.bullet?.trim() || "";
     const targetRole = body.targetRole?.trim() || "Professional Role";
@@ -108,6 +111,9 @@ DIRECTIVES:
     });
 
   } catch (error: any) {
+    if (error instanceof BadRequestError) {
+      return NextResponse.json({ success: false, error: error.message }, { status: 400 });
+    }
     console.error("Error in /api/resume/enhance-bullet:", error);
     return NextResponse.json(
       { success: false, error: error.message || "Failed to enhance bullet point" },
