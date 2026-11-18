@@ -189,6 +189,7 @@ export function MVPGenerator() {
   };
 
   const handleWeaveKeyword = (keyword: string) => {
+    if (!window.confirm(`Add ${keyword} as a skill you have hands-on experience with?`)) return;
     if (generatedLetter.trim()) {
       setGeneratedLetter((prev) => weaveKeywordIntoText(prev, keyword));
     } else if (resumeText.trim()) {
@@ -198,6 +199,7 @@ export function MVPGenerator() {
 
   const handleWeaveAllKeywords = () => {
     if (!atsResult || atsResult.missingKeywords.length === 0) return;
+    if (!window.confirm(`Confirm you have hands-on experience with every skill before adding them:\n\n${atsResult.missingKeywords.join(', ')}`)) return;
     if (generatedLetter.trim()) {
       setGeneratedLetter((prev) => {
         let updated = prev;

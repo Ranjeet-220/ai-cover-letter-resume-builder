@@ -92,11 +92,13 @@ export function CoverLetterEditor({
   }, [content, jobDescription, jobTitle]);
 
   const handleWeaveKeyword = (keyword: string) => {
+    if (!window.confirm(`Add ${keyword} as a skill you have hands-on experience with?`)) return;
     setContent((prev) => weaveKeywordIntoText(prev, keyword));
   };
 
   const handleWeaveAllKeywords = () => {
     if (!atsResult || atsResult.missingKeywords.length === 0) return;
+    if (!window.confirm(`Confirm you have hands-on experience with every skill before adding them:\n\n${atsResult.missingKeywords.join(', ')}`)) return;
     setContent((prev) => {
       let updated = prev;
       atsResult.missingKeywords.forEach((kw) => {
@@ -110,9 +112,16 @@ export function CoverLetterEditor({
     setIsImproving(true);
     setImprovingAction(action);
     try {
-      const customGeminiKey = typeof window !== 'undefined' ? localStorage.getItem('covercraft_gemini_api_key') || '' : '';
-      const customAnthropicKey = typeof window !== 'undefined' ? localStorage.getItem('covercraft_anthropic_api_key') || '' : '';
-      const model = typeof window !== 'undefined' ? localStorage.getItem('covercraft_selected_model') || 'gemini-3.1-flash-lite' : 'gemini-3.1-flash-lite';
+      let customGeminiKey = '';
+      let customAnthropicKey = '';
+      let model = 'gemini-3.1-flash-lite';
+      try {
+        customGeminiKey = localStorage.getItem('covercraft_gemini_api_key') || '';
+        customAnthropicKey = localStorage.getItem('covercraft_anthropic_api_key') || '';
+        model = localStorage.getItem('covercraft_selected_model') || model;
+      } catch {
+        // Keep the editor usable when browser storage is denied.
+      }
 
       const res = await fetch('/api/improve', {
         method: 'POST',
