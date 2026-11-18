@@ -2,7 +2,15 @@ import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import { ToastProvider } from "@/components/ui/Toast";
 
-const APP_URL = process.env.NEXT_PUBLIC_APP_URL || "https://jobbeam.vercel.app";
+const DEFAULT_APP_URL = "https://jobbeam.vercel.app";
+const APP_URL = (() => {
+  try {
+    const url = new URL(process.env.NEXT_PUBLIC_APP_URL || DEFAULT_APP_URL);
+    return url.protocol === "http:" || url.protocol === "https:" ? url.origin : DEFAULT_APP_URL;
+  } catch {
+    return DEFAULT_APP_URL;
+  }
+})();
 
 const THEME_INIT_SCRIPT = `
 (function () {
